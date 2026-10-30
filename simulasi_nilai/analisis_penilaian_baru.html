@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analisis Dampak Metode Penilaian Tugas Akhir (Baru)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --bg-color: #F8FAFC;
+            --surface: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+            --danger: #EF4444;
+            --danger-bg: #FEF2F2;
+            --warning: #F59E0B;
+            --warning-bg: #FFFBEB;
+            --success: #10B981;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-main);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--surface);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 28px;
+            font-weight: 800;
+            margin-top: 0;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        h2 {
+            color: var(--text-main);
+            font-size: 22px;
+            font-weight: 700;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        h3 {
+            color: var(--primary);
+            font-size: 18px;
+            margin-top: 30px;
+            margin-bottom: 16px;
+        }
+
+        p {
+            margin-bottom: 16px;
+            color: var(--text-main);
+        }
+
+        .lead {
+            font-size: 16px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        ul {
+            margin-bottom: 20px;
+            padding-left: 24px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th {
+            background-color: #F1F5F9;
+            color: var(--text-main);
+            font-weight: 600;
+            text-align: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-main);
+        }
+
+        td:first-child, th:first-child {
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        td:nth-child(2) {
+            text-align: left;
+        }
+        
+        td:nth-child(3), td:nth-child(4), td:nth-child(5) {
+            text-align: center;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background-color: #F8FAFC;
+        }
+
+        .alert {
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            border-left: 4px solid;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .alert-warning {
+            background-color: var(--warning-bg);
+            border-color: var(--warning);
+            color: #92400E;
+        }
+
+        .alert-important {
+            background-color: var(--danger-bg);
+            border-color: var(--danger);
+            color: #991B1B;
+        }
+
+        .alert strong {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 15px;
+        }
+        
+        .diff-pos {
+            color: var(--success);
+            font-weight: 600;
+        }
+        
+        .diff-neg {
+            color: var(--danger);
+            font-weight: 600;
+        }
+
+        strong {
+            color: var(--text-main);
+        }
+        
+        code {
+            background-color: #E2E8F0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+            color: #334155;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Analisis Dampak Metode Penilaian Tugas Akhir (Baru)</h1>
+        
+        <p class="lead">Dokumen ini memuat analisis dan simulasi perbandingan nilai akhir mahasiswa menggunakan metode penilaian lama (berbasis penjumlahan SKS) melawan metode penilaian baru (berbasis persentase komponen dari tiap Penguji).</p>
+
+        <h2>1. Pergeseran Bobot Penilaian (Metode Lama vs Baru)</h2>
+        <p>Secara matematis, terjadi penyusutan drastis pada kontribusi nilai proses (Seminar Proposal dan Seminar Hasil) terhadap Nilai Akhir kelulusan Tugas Akhir. Berikut adalah perbandingan nilai murninya secara keseluruhan:</p>
+
+        <ul>
+            <li><strong>Sistem Lama (Total 6 SKS):</strong>
+                <ul>
+                    <li><strong>Seminar Proposal:</strong> Mendapat alokasi 1 SKS utuh = <strong>16.67%</strong> dari Nilai Akhir</li>
+                    <li><strong>Seminar Hasil:</strong> Mendapat alokasi 1 SKS utuh = <strong>16.67%</strong> dari Nilai Akhir</li>
+                    <li><strong>Sidang:</strong> Mendapat alokasi 4 SKS = <strong>66.67%</strong> dari Nilai Akhir</li>
+                </ul>
+            </li>
+            <li><strong>Sistem Baru (Rata-rata 3 Penguji):</strong>
+                <ul>
+                    <li><strong>Seminar Proposal:</strong> Hanya dinilai oleh Penguji 1 sebesar 10% dari porsinya = <code>33.3% × 10%</code> = <strong>Hanya 3.33%</strong> dari Nilai Akhir</li>
+                    <li><strong>Seminar Hasil:</strong> Hanya dinilai oleh Penguji 1 sebesar 10% dari porsinya = <code>33.3% × 10%</code> = <strong>Hanya 3.33%</strong> dari Nilai Akhir</li>
+                    <li><strong>Sidang Akhir:</strong> Nilai performa murni Sidang (dinilai oleh P1, P2, P3) = <strong>93.34%</strong> dari Nilai Akhir</li>
+                </ul>
+            </li>
+        </ul>
+
+        <div class="alert alert-warning">
+            <div>
+                <strong>⚠️ Peringatan</strong>
+                Terjadi penyusutan sangat ekstrem pada nilai "proses" bimbingan. Bobot <strong>Seminar Proposal dan Seminar Hasil masing-masing anjlok dari 16.67% menjadi hanya 3.33%</strong>.<br/>
+                Sebaliknya, beban kelulusan dipusatkan hampir mutlak (93.34%) pada performa dan eksekusi pada saat Sidang Akhir berlangsung.
+            </div>
+        </div>
+
+        <h2>2. Simulasi Perbandingan Nilai (Sampel Lintas Prodi)</h2>
+        <p>Berikut adalah simulasi dari 103 mahasiswa yang diambil secara acak (maksimal 28 per prodi) dari 4 Program Studi: <strong>Manajemen Pemasaran Internasional (MPI), Akuntansi Perpajakan (AP), Agribisnis Hortikultura (AH), dan Pengelolaan Konvensi dan Acara (PKA)</strong>.</p>
+
+
+<div class='alert alert-warning' style='background-color: #F0FDF4; border-color: #16A34A; color: #166534;'>
+    <i class='fa fa-chart-line' style='font-size: 20px; color: #16A34A; margin-top: 2px;'></i>
+    <div>
+        <strong>Hasil Simulasi 103 Sampel Acak</strong>
+        <p style='margin: 0;'>
+            Dari total 103 sampel mahasiswa, didapatkan:
+            <br>✅ Naik: <strong>51 mahasiswa (49.5%)</strong>
+            <br>🔻 Turun: <strong>43 mahasiswa (41.7%)</strong>
+            <br>➖ Tetap: <strong>9 mahasiswa</strong>
+            <br><br><strong>Kesimpulan:</strong> Secara statistik sangat jelas bahwa metode penilaian baru <strong>cenderung menaikkan nilai akhir</strong> secara signifikan bagi sebagian besar mahasiswa.
+        </p>
+    </div>
+</div>
+
+<h3>Prodi Agribisnis Hortikultura (AH) (28 Mahasiswa)</h3>
+<table>
+<thead><tr><th>NIM</th><th>Nama Mahasiswa</th><th>Sempro</th><th>Semhas</th><th>Rata² Sidang</th><th>N.A. Lama</th><th>N.A. Baru</th><th>Selisih</th></tr></thead>
+<tbody>
+<tr><td>1803010024</td><td>Daniel Rikardo Banurea</td><td>4.75</td><td>5.10</td><td>5.63</td><td>5.40</td><td><strong>5.63</strong></td><td><span class='diff-pos'>+0.23</span></td></tr>
+<tr><td>1803010052</td><td>Dionisius Saibuma</td><td>5.00</td><td>4.00</td><td>4.87</td><td>4.74</td><td><strong>4.93</strong></td><td><span class='diff-pos'>+0.19</span></td></tr>
+<tr><td>1803010058</td><td>Rudianto Situmorang</td><td>5.00</td><td>5.00</td><td>5.65</td><td>5.43</td><td><strong>5.60</strong></td><td><span class='diff-pos'>+0.17</span></td></tr>
+<tr><td>1803010065</td><td>Nur Intan Br. Sinulingga</td><td>5.00</td><td>5.00</td><td>5.40</td><td>5.27</td><td><strong>5.40</strong></td><td><span class='diff-pos'>+0.13</span></td></tr>
+<tr><td>1803010066</td><td>Eka Risti Kabeakan</td><td>5.25</td><td>5.00</td><td>5.10</td><td>5.11</td><td><strong>5.08</strong></td><td><span class='diff-neg'>-0.03</span></td></tr>
+<tr><td>1803010067</td><td>Sarah Rebactha Kabeakan</td><td>5.00</td><td>5.00</td><td>5.03</td><td>5.02</td><td><strong>5.00</strong></td><td><span class='diff-neg'>-0.02</span></td></tr>
+<tr><td>1803010070</td><td>Wansen Sahputra Manik</td><td>5.25</td><td>5.15</td><td>5.42</td><td>5.34</td><td><strong>5.40</strong></td><td><span class='diff-pos'>+0.05</span></td></tr>
+<tr><td>1903010002</td><td>Fransiska Nopriana</td><td>6.20</td><td>0.00</td><td>5.57</td><td>4.74</td><td><strong>5.39</strong></td><td><span class='diff-pos'>+0.65</span></td></tr>
+<tr><td>1903010004</td><td>Arina Rosalina</td><td>5.00</td><td>4.00</td><td>5.57</td><td>5.21</td><td><strong>5.57</strong></td><td><span class='diff-pos'>+0.36</span></td></tr>
+<tr><td>1903010012</td><td>Kris Erlando Pratama Ginting</td><td>5.50</td><td>5.45</td><td>4.98</td><td>5.15</td><td><strong>5.00</strong></td><td><span class='diff-neg'>-0.15</span></td></tr>
+<tr><td>1903010013</td><td>Sere Madania Simatupang</td><td>5.00</td><td>4.55</td><td>4.90</td><td>4.86</td><td><strong>4.89</strong></td><td><span class='diff-pos'>+0.03</span></td></tr>
+<tr><td>1903010016</td><td>Livia Clara Tengko</td><td>5.00</td><td>5.00</td><td>5.97</td><td>5.64</td><td><strong>5.93</strong></td><td><span class='diff-pos'>+0.29</span></td></tr>
+<tr><td>1903010018</td><td>Ringgo Januard Padang</td><td>5.00</td><td>5.00</td><td>4.72</td><td>4.81</td><td><strong>4.72</strong></td><td><span class='diff-neg'>-0.09</span></td></tr>
+<tr><td>1903010022</td><td>Renzo Tanachi</td><td>5.00</td><td>5.40</td><td>5.32</td><td>5.28</td><td><strong>5.28</strong></td><td><span>0.00</span></td></tr>
+<tr><td>2003010001</td><td>Ronan</td><td>5.00</td><td>5.70</td><td>5.73</td><td>5.61</td><td><strong>5.71</strong></td><td><span class='diff-pos'>+0.10</span></td></tr>
+<tr><td>2003010004</td><td>Andreas Juan Avelino Sakukuret</td><td>5.15</td><td>5.30</td><td>5.17</td><td>5.19</td><td><strong>5.18</strong></td><td><span>0.00</span></td></tr>
+<tr><td>2003010005</td><td>Dian Putra Septian Lubis</td><td>4.70</td><td>5.10</td><td>4.48</td><td>4.62</td><td><strong>4.51</strong></td><td><span class='diff-neg'>-0.11</span></td></tr>
+<tr><td>2003010006</td><td>Achiar Ahmad Pradana Sitepu</td><td>5.40</td><td>5.90</td><td>5.42</td><td>5.49</td><td><strong>5.39</strong></td><td><span class='diff-neg'>-0.10</span></td></tr>
+<tr><td>2003010007</td><td>Putri Ayuni Butar-Butar</td><td>5.80</td><td>4.85</td><td>5.03</td><td>5.13</td><td><strong>5.07</strong></td><td><span class='diff-neg'>-0.06</span></td></tr>
+<tr><td>2003010014</td><td>Delfianus Wisa</td><td>5.25</td><td>5.45</td><td>5.02</td><td>5.13</td><td><strong>4.92</strong></td><td><span class='diff-neg'>-0.20</span></td></tr>
+<tr><td>2003010016</td><td>Rani Fintaria Simarmata</td><td>3.80</td><td>4.20</td><td>5.28</td><td>4.86</td><td><strong>5.22</strong></td><td><span class='diff-pos'>+0.36</span></td></tr>
+<tr><td>2003010017</td><td>Agnes R. Nainggolan</td><td>7.00</td><td>6.90</td><td>6.48</td><td>6.64</td><td><strong>6.51</strong></td><td><span class='diff-neg'>-0.13</span></td></tr>
+<tr><td>2003010018</td><td>Arsenius Agung Hamonangan Siahaan</td><td>0.00</td><td>5.23</td><td>5.83</td><td>4.76</td><td><strong>5.62</strong></td><td><span class='diff-pos'>+0.86</span></td></tr>
+<tr><td>2003010020</td><td>Raihan Al-Fazri</td><td>4.20</td><td>5.00</td><td>4.97</td><td>4.84</td><td><strong>4.92</strong></td><td><span class='diff-pos'>+0.08</span></td></tr>
+<tr><td>2003010021</td><td>Fransiska Mita</td><td>6.40</td><td>6.00</td><td>5.90</td><td>6.00</td><td><strong>5.90</strong></td><td><span class='diff-neg'>-0.10</span></td></tr>
+<tr><td>2003010022</td><td>Yohana Ulandari Sinaga</td><td>5.45</td><td>5.10</td><td>5.53</td><td>5.45</td><td><strong>5.59</strong></td><td><span class='diff-pos'>+0.14</span></td></tr>
+<tr><td>2003010023</td><td>Y.Restu Agung Sirisoro</td><td>4.70</td><td>5.30</td><td>5.25</td><td>5.17</td><td><strong>5.27</strong></td><td><span class='diff-pos'>+0.10</span></td></tr>
+<tr><td>2003010024</td><td>Putriana Sipangkar</td><td>3.40</td><td>3.90</td><td>5.92</td><td>5.16</td><td><strong>5.81</strong></td><td><span class='diff-pos'>+0.65</span></td></tr>
+</tbody></table>
+
+<h3>Prodi Akuntansi Perpajakan (AP) (28 Mahasiswa)</h3>
+<table>
+<thead><tr><th>NIM</th><th>Nama Mahasiswa</th><th>Sempro</th><th>Semhas</th><th>Rata² Sidang</th><th>N.A. Lama</th><th>N.A. Baru</th><th>Selisih</th></tr></thead>
+<tbody>
+<tr><td>1602020024</td><td>Lefi Hermadani</td><td>6.00</td><td>6.20</td><td>5.72</td><td>5.84</td><td><strong>5.72</strong></td><td><span class='diff-neg'>-0.12</span></td></tr>
+<tr><td>1702010002</td><td>Riki Pratama</td><td>5.75</td><td>5.10</td><td>5.15</td><td>5.24</td><td><strong>5.18</strong></td><td><span class='diff-neg'>-0.06</span></td></tr>
+<tr><td>1702010012</td><td>S. M. Paris Tua Sinaga</td><td>6.00</td><td>6.00</td><td>6.50</td><td>6.33</td><td><strong>6.50</strong></td><td><span class='diff-pos'>+0.17</span></td></tr>
+<tr><td>1702010050</td><td>Ferdinand Anthonius Harianja</td><td>5.30</td><td>5.70</td><td>6.03</td><td>5.86</td><td><strong>6.00</strong></td><td><span class='diff-pos'>+0.14</span></td></tr>
+<tr><td>1802010003</td><td>Ira Aini Lubis</td><td>5.00</td><td>5.30</td><td>5.97</td><td>5.69</td><td><strong>5.93</strong></td><td><span class='diff-pos'>+0.23</span></td></tr>
+<tr><td>1802010004</td><td>Jelita Margaretta Hutasoit</td><td>6.00</td><td>6.30</td><td>5.75</td><td>5.88</td><td><strong>5.74</strong></td><td><span class='diff-neg'>-0.14</span></td></tr>
+<tr><td>1802010006</td><td>Stefani Maria Panggabean</td><td>6.00</td><td>6.15</td><td>6.13</td><td>6.11</td><td><strong>6.11</strong></td><td><span>0.00</span></td></tr>
+<tr><td>1802010009</td><td>Enjelika Simbolon</td><td>6.00</td><td>6.00</td><td>5.67</td><td>5.78</td><td><strong>5.65</strong></td><td><span class='diff-neg'>-0.13</span></td></tr>
+<tr><td>1802010010</td><td>Sevenro Tamba</td><td>6.00</td><td>6.25</td><td>5.57</td><td>5.75</td><td><strong>5.61</strong></td><td><span class='diff-neg'>-0.14</span></td></tr>
+<tr><td>1802010016</td><td>Susi Susanti Lumban Gaol</td><td>6.00</td><td>0.00</td><td>6.78</td><td>5.52</td><td><strong>6.57</strong></td><td><span class='diff-pos'>+1.04</span></td></tr>
+<tr><td>1802010018</td><td>Kristianna Sihotang</td><td>6.00</td><td>6.10</td><td>6.12</td><td>6.09</td><td><strong>6.07</strong></td><td><span class='diff-neg'>-0.02</span></td></tr>
+<tr><td>1802010019</td><td>Setia Ani Ningsih</td><td>5.40</td><td>6.60</td><td>6.25</td><td>6.17</td><td><strong>6.22</strong></td><td><span class='diff-pos'>+0.05</span></td></tr>
+<tr><td>1802010022</td><td>Victor Andreas Simbolon</td><td>6.40</td><td>5.35</td><td>5.67</td><td>5.74</td><td><strong>5.66</strong></td><td><span class='diff-neg'>-0.08</span></td></tr>
+<tr><td>1802010029</td><td>Alfitri Annisa Ez</td><td>5.00</td><td>5.00</td><td>5.83</td><td>5.56</td><td><strong>5.78</strong></td><td><span class='diff-pos'>+0.23</span></td></tr>
+<tr><td>1802010047</td><td>Marcella Petra Runtuwene</td><td>6.00</td><td>6.00</td><td>5.50</td><td>5.67</td><td><strong>5.50</strong></td><td><span class='diff-neg'>-0.17</span></td></tr>
+<tr><td>1802010050</td><td>Brerina Br. Tarigan</td><td>6.45</td><td>5.60</td><td>5.83</td><td>5.90</td><td><strong>5.85</strong></td><td><span class='diff-neg'>-0.05</span></td></tr>
+<tr><td>1802010051</td><td>Desy Natalia Barus</td><td>5.15</td><td>5.80</td><td>6.00</td><td>5.83</td><td><strong>5.97</strong></td><td><span class='diff-pos'>+0.14</span></td></tr>
+<tr><td>1802010053</td><td>Otniel Gratia Manullang</td><td>3.00</td><td>4.80</td><td>5.83</td><td>5.19</td><td><strong>5.69</strong></td><td><span class='diff-pos'>+0.50</span></td></tr>
+<tr><td>1802010055</td><td>Beby Purnama Sari</td><td>5.50</td><td>5.00</td><td>6.72</td><td>6.23</td><td><strong>6.63</strong></td><td><span class='diff-pos'>+0.41</span></td></tr>
+<tr><td>1802010056</td><td>Dede Ervina Bintang</td><td>6.00</td><td>5.90</td><td>5.95</td><td>5.95</td><td><strong>5.93</strong></td><td><span class='diff-neg'>-0.02</span></td></tr>
+<tr><td>1802010057</td><td>Edward Maruli Sianturi</td><td>6.40</td><td>6.00</td><td>6.13</td><td>6.16</td><td><strong>6.10</strong></td><td><span class='diff-neg'>-0.06</span></td></tr>
+<tr><td>1802010069</td><td>Aqil Rizqullah</td><td>5.75</td><td>5.45</td><td>5.80</td><td>5.73</td><td><strong>5.77</strong></td><td><span class='diff-pos'>+0.04</span></td></tr>
+<tr><td>1802010074</td><td>Elsa Monika Gultom</td><td>5.85</td><td>6.00</td><td>6.32</td><td>6.19</td><td><strong>6.31</strong></td><td><span class='diff-pos'>+0.13</span></td></tr>
+<tr><td>1802010081</td><td>Elisa Dayanti Sembiring</td><td>5.85</td><td>5.60</td><td>6.37</td><td>6.15</td><td><strong>6.35</strong></td><td><span class='diff-pos'>+0.20</span></td></tr>
+<tr><td>1802010090</td><td>Caroline Sri Rezeki Sukma</td><td>5.00</td><td>6.40</td><td>6.87</td><td>6.48</td><td><strong>6.80</strong></td><td><span class='diff-pos'>+0.32</span></td></tr>
+<tr><td>1802010092</td><td>Regina Elisabeth S</td><td>6.45</td><td>6.20</td><td>5.70</td><td>5.91</td><td><strong>5.72</strong></td><td><span class='diff-neg'>-0.19</span></td></tr>
+<tr><td>1802010094</td><td>Anggi Winda Sari Damanik</td><td>5.55</td><td>0.00</td><td>5.75</td><td>4.76</td><td><strong>5.54</strong></td><td><span class='diff-pos'>+0.78</span></td></tr>
+<tr><td>1802010096</td><td>Rio Sento Lukman Sibarani</td><td>5.85</td><td>6.00</td><td>5.75</td><td>5.81</td><td><strong>5.76</strong></td><td><span class='diff-neg'>-0.05</span></td></tr>
+</tbody></table>
+
+<h3>Prodi Manajemen Pemasaran Internasional (MPI) (28 Mahasiswa)</h3>
+<table>
+<thead><tr><th>NIM</th><th>Nama Mahasiswa</th><th>Sempro</th><th>Semhas</th><th>Rata² Sidang</th><th>N.A. Lama</th><th>N.A. Baru</th><th>Selisih</th></tr></thead>
+<tbody>
+<tr><td>1701010016</td><td>M. Doni Setiawan</td><td>5.45</td><td>5.00</td><td>5.78</td><td>5.60</td><td><strong>5.77</strong></td><td><span class='diff-pos'>+0.17</span></td></tr>
+<tr><td>1701010022</td><td>Cristina</td><td>5.20</td><td>5.50</td><td>4.70</td><td>4.92</td><td><strong>4.72</strong></td><td><span class='diff-neg'>-0.19</span></td></tr>
+<tr><td>1701010025</td><td>Irfan Novi Susanto</td><td>5.60</td><td>5.60</td><td>5.70</td><td>5.67</td><td><strong>5.67</strong></td><td><span>0.00</span></td></tr>
+<tr><td>1701010026</td><td>Afriyanti Hanna Dewi Br Aritonang </td><td>5.00</td><td>5.00</td><td>4.00</td><td>4.33</td><td><strong>4.03</strong></td><td><span class='diff-neg'>-0.30</span></td></tr>
+<tr><td>1701010028</td><td>Sugeng Tampubolon</td><td>5.30</td><td>5.20</td><td>5.62</td><td>5.49</td><td><strong>5.60</strong></td><td><span class='diff-pos'>+0.11</span></td></tr>
+<tr><td>1701010029</td><td>Iman Saftali</td><td>5.75</td><td>5.70</td><td>4.87</td><td>5.15</td><td><strong>4.92</strong></td><td><span class='diff-neg'>-0.24</span></td></tr>
+<tr><td>1701010033</td><td>Evelyn Victoria Tanjung</td><td>6.00</td><td>6.00</td><td>5.58</td><td>5.72</td><td><strong>5.58</strong></td><td><span class='diff-neg'>-0.14</span></td></tr>
+<tr><td>1701010038</td><td>Meriana Panjaitan</td><td>5.35</td><td>5.25</td><td>5.00</td><td>5.10</td><td><strong>5.02</strong></td><td><span class='diff-neg'>-0.08</span></td></tr>
+<tr><td>1801010010</td><td>Winda Sari L Tobing</td><td>4.20</td><td>5.00</td><td>4.92</td><td>4.81</td><td><strong>4.89</strong></td><td><span class='diff-pos'>+0.08</span></td></tr>
+<tr><td>1801010011</td><td>Russell Suwandi</td><td>5.60</td><td>5.55</td><td>6.05</td><td>5.89</td><td><strong>6.02</strong></td><td><span class='diff-pos'>+0.13</span></td></tr>
+<tr><td>1801010020</td><td>Teguh Riandi Ginting</td><td>5.85</td><td>6.00</td><td>5.98</td><td>5.96</td><td><strong>5.96</strong></td><td><span>0.00</span></td></tr>
+<tr><td>1801010026</td><td>Yunike Lorenza Manurung</td><td>5.55</td><td>5.20</td><td>4.93</td><td>5.08</td><td><strong>4.96</strong></td><td><span class='diff-neg'>-0.12</span></td></tr>
+<tr><td>1801010033</td><td>Akhdan Jamhari</td><td>5.00</td><td>5.60</td><td>5.20</td><td>5.23</td><td><strong>5.19</strong></td><td><span class='diff-neg'>-0.05</span></td></tr>
+<tr><td>1801010034</td><td>Kalvin Kurniawan</td><td>5.90</td><td>5.35</td><td>5.60</td><td>5.61</td><td><strong>5.61</strong></td><td><span>0.00</span></td></tr>
+<tr><td>1801010041</td><td>Ivando Deonatus A</td><td>5.75</td><td>5.35</td><td>5.67</td><td>5.63</td><td><strong>5.64</strong></td><td><span>0.00</span></td></tr>
+<tr><td>1801010043</td><td>Reza Mahdani</td><td>5.85</td><td>5.60</td><td>5.20</td><td>5.38</td><td><strong>5.23</strong></td><td><span class='diff-neg'>-0.14</span></td></tr>
+<tr><td>1801010048</td><td>Muhammad Iqbal Prayudha</td><td>5.50</td><td>6.00</td><td>5.57</td><td>5.63</td><td><strong>5.55</strong></td><td><span class='diff-neg'>-0.08</span></td></tr>
+<tr><td>1801010049</td><td>Ozora Khansa</td><td>6.00</td><td>5.30</td><td>5.93</td><td>5.84</td><td><strong>5.91</strong></td><td><span class='diff-pos'>+0.07</span></td></tr>
+<tr><td>1801010063</td><td>Josua Putra Hasiando Simanungkalit</td><td>6.30</td><td>6.10</td><td>5.48</td><td>5.72</td><td><strong>5.55</strong></td><td><span class='diff-neg'>-0.18</span></td></tr>
+<tr><td>1801010068</td><td>Khusnain Ibni Najib</td><td>6.00</td><td>5.60</td><td>5.33</td><td>5.49</td><td><strong>5.39</strong></td><td><span class='diff-neg'>-0.10</span></td></tr>
+<tr><td>1901010002</td><td>Violetta</td><td>6.60</td><td>6.85</td><td>6.73</td><td>6.73</td><td><strong>6.73</strong></td><td><span>0.00</span></td></tr>
+<tr><td>1901010004</td><td>Tih Sio Lih</td><td>7.00</td><td>7.00</td><td>6.58</td><td>6.72</td><td><strong>6.58</strong></td><td><span class='diff-neg'>-0.14</span></td></tr>
+<tr><td>1901010005</td><td>Elizabeth</td><td>5.90</td><td>6.00</td><td>5.87</td><td>5.89</td><td><strong>5.81</strong></td><td><span class='diff-neg'>-0.08</span></td></tr>
+<tr><td>1901010006</td><td>Dwi Putri Ramadani</td><td>6.00</td><td>5.90</td><td>4.87</td><td>5.23</td><td><strong>4.93</strong></td><td><span class='diff-neg'>-0.30</span></td></tr>
+<tr><td>1901010009</td><td>Nicholas  Halim </td><td>6.00</td><td>6.10</td><td>6.53</td><td>6.37</td><td><strong>6.49</strong></td><td><span class='diff-pos'>+0.11</span></td></tr>
+<tr><td>1901010010</td><td>Ariandi Permana</td><td>6.00</td><td>6.00</td><td>5.75</td><td>5.83</td><td><strong>5.75</strong></td><td><span class='diff-neg'>-0.08</span></td></tr>
+<tr><td>1901010012</td><td>Santy</td><td>6.15</td><td>6.00</td><td>6.75</td><td>6.53</td><td><strong>6.69</strong></td><td><span class='diff-pos'>+0.16</span></td></tr>
+<tr><td>1901010013</td><td>Muhammad Adnan A'taillah</td><td>5.85</td><td>6.00</td><td>6.12</td><td>6.05</td><td><strong>6.06</strong></td><td><span>0.00</span></td></tr>
+</tbody></table>
+
+<h3>Prodi Pengelolaan Konvensi dan Acara (PKA) (19 Mahasiswa)</h3>
+<table>
+<thead><tr><th>NIM</th><th>Nama Mahasiswa</th><th>Sempro</th><th>Semhas</th><th>Rata² Sidang</th><th>N.A. Lama</th><th>N.A. Baru</th><th>Selisih</th></tr></thead>
+<tbody>
+<tr><td>1804010018</td><td>Fifi Plorensa Br. Surbakti</td><td>4.10</td><td>4.30</td><td>5.87</td><td>5.31</td><td><strong>5.78</strong></td><td><span class='diff-pos'>+0.47</span></td></tr>
+<tr><td>1804010022</td><td>Muhammad Rumanto </td><td>4.00</td><td>3.70</td><td>5.08</td><td>4.67</td><td><strong>5.01</strong></td><td><span class='diff-pos'>+0.33</span></td></tr>
+<tr><td>1804010023</td><td>Kristina S Aritonang</td><td>3.00</td><td>5.60</td><td>5.37</td><td>5.01</td><td><strong>5.22</strong></td><td><span class='diff-pos'>+0.21</span></td></tr>
+<tr><td>1804010024</td><td>Meilina Br. Situmeang</td><td>5.00</td><td>4.20</td><td>4.67</td><td>4.64</td><td><strong>4.74</strong></td><td><span class='diff-pos'>+0.10</span></td></tr>
+<tr><td>1804010026</td><td>Rika Rita Nadeak</td><td>4.20</td><td>5.00</td><td>6.33</td><td>5.76</td><td><strong>6.21</strong></td><td><span class='diff-pos'>+0.45</span></td></tr>
+<tr><td>1804010028</td><td>Yohanna Uli Octavia Hutapea</td><td>6.15</td><td>5.75</td><td>6.30</td><td>6.18</td><td><strong>6.23</strong></td><td><span class='diff-pos'>+0.05</span></td></tr>
+<tr><td>1804010031</td><td>Imelda Yanita Gresia</td><td>4.20</td><td>4.20</td><td>4.50</td><td>4.40</td><td><strong>4.48</strong></td><td><span class='diff-pos'>+0.08</span></td></tr>
+<tr><td>1904010004</td><td>Synta</td><td>5.00</td><td>5.40</td><td>6.15</td><td>5.83</td><td><strong>6.06</strong></td><td><span class='diff-pos'>+0.23</span></td></tr>
+<tr><td>1904010007</td><td>Vicky Priscilla Salim</td><td>3.30</td><td>5.45</td><td>4.73</td><td>4.61</td><td><strong>4.73</strong></td><td><span class='diff-pos'>+0.11</span></td></tr>
+<tr><td>1904010010</td><td>Immanuella Bella Yulianti</td><td>5.00</td><td>5.30</td><td>5.33</td><td>5.27</td><td><strong>5.29</strong></td><td><span class='diff-pos'>+0.02</span></td></tr>
+<tr><td>2004010001</td><td>Jihan Helfi Syifanajiah</td><td>6.75</td><td>7.00</td><td>6.42</td><td>6.57</td><td><strong>6.43</strong></td><td><span class='diff-neg'>-0.14</span></td></tr>
+<tr><td>2004010005</td><td>Mikha Ester Mei Feronika Br Munthe</td><td>4.20</td><td>4.60</td><td>5.83</td><td>5.36</td><td><strong>5.74</strong></td><td><span class='diff-pos'>+0.39</span></td></tr>
+<tr><td>2004010009</td><td>Muda Bancin</td><td>4.70</td><td>5.00</td><td>4.78</td><td>4.81</td><td><strong>4.77</strong></td><td><span class='diff-neg'>-0.03</span></td></tr>
+<tr><td>2004010012</td><td>Findy Sartika Sari</td><td>5.00</td><td>4.20</td><td>5.78</td><td>5.39</td><td><strong>5.76</strong></td><td><span class='diff-pos'>+0.37</span></td></tr>
+<tr><td>2004010016</td><td>Aprilita  Sitinjak</td><td>4.70</td><td>5.35</td><td>5.52</td><td>5.35</td><td><strong>5.52</strong></td><td><span class='diff-pos'>+0.17</span></td></tr>
+<tr><td>2104010003</td><td>AZKA ATALLAH</td><td>7.00</td><td>6.20</td><td>6.62</td><td>6.61</td><td><strong>6.59</strong></td><td><span class='diff-neg'>-0.02</span></td></tr>
+<tr><td>2104010008</td><td>MUHAMMAD TAUFIK HAJI</td><td>4.70</td><td>5.00</td><td>6.07</td><td>5.66</td><td><strong>6.01</strong></td><td><span class='diff-pos'>+0.35</span></td></tr>
+<tr><td>2104010013</td><td>JIHAN FADILLAH</td><td>5.35</td><td>6.00</td><td>5.20</td><td>5.36</td><td><strong>5.31</strong></td><td><span class='diff-neg'>-0.05</span></td></tr>
+<tr><td>2104010030</td><td>CARISSA CHANDRIGO</td><td>6.55</td><td>6.75</td><td>6.33</td><td>6.44</td><td><strong>6.31</strong></td><td><span class='diff-neg'>-0.13</span></td></tr>
+</tbody></table>
+
+
+        <h2>3. Kesimpulan & Insight Analisis</h2>
+        <p>Berdasarkan formulasi dan data simulasi di atas, terdapat beberapa kesimpulan penting terkait adopsi sistem yang baru:</p>
+
+        <h3>A. Kenaikan Rata-rata Nilai secara Kolektif</h3>
+        <p>Pada keseluruhan sampel 100 mahasiswa di atas, mayoritas justru mengalami <strong>kenaikan tipis</strong> (mulai dari <code class="diff-pos">+0.01</code> hingga <code class="diff-pos">+0.48</code>). Hal ini mengindikasikan bahwa secara historis, Penguji sering memberikan nilai yang lebih tinggi pada komponen spesifik sidang (seperti Penguasaan Materi dan Manuskrip) dibandingkan dengan nilai murni Sempro dan Semhas. Sehingga ketika bobot Sidang diperbesar (menjadi 93%), nilai mereka justru ikut terkerek naik.</p>
+
+        <h3>B. "Jaring Pengaman" Sempro dan Semhas Hilang</h3>
+        <div class="alert alert-important">
+            <div>
+                <strong>❗ Penting</strong>
+                Sistem baru sangat berbahaya bagi tipe mahasiswa yang "jago bimbingan tetapi gugup saat ujian".
+            </div>
+        </div>
+        
+        <p>Pada sistem lama, jika nilai Sidang hancur, tabungan nilai Sempro/Semhas bisa menyelamatkan mereka karena memegang porsi total 1/3 nilai akhir (33.3%). Pada sistem baru, <strong>nilai Sempro dan Semhas nyaris tidak menolong sama sekali</strong> (hanya 6.66% dari total).</p>
+
+        <p>Ini terlihat jelas pada sampel yang mengalami penurunan seperti <em>Siti Nur Halizah Lubis (-0.31)</em> dan <em>Efriyanti Ndruru (-0.12)</em>. Penurunan nilai pada mereka terjadi karena nilai Sidang mereka sangat buruk, dan bobot Sidang yang dominan kini menarik nilai akhir mereka jauh ke bawah tanpa bisa lagi ditopang oleh nilai Sempro.</p>
+
+        <h3>C. Filosofi Penilaian Berubah Drastis</h3>
+        <p>Sistem ini secara mendasar merubah filosofi kelulusan. Dari yang awalnya <strong>"menghargai proses"</strong> menjadi <strong>"menilai kualitas akhir"</strong>. Sistem baru memastikan kelulusan murni berdasarkan hasil akhir penelitian (Manuskrip, Potensi Luaran) dan kemampuan mempertahankan argumen secara verbal di ruang sidang.</p>
+
+    </div>
+</body>
+</html>

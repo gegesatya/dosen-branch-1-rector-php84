@@ -1,0 +1,15 @@
+INSERT IGNORE INTO dapo_sekolah (id, npsn, sekolah, bentuk, status, kabupaten_kota, lintang, bujur) VALUES 
+(UUID(), 'P9959870', 'PKBM LASKAR PELANGI', 'SMA', 'SWASTA', 'Kab. Deli Serdang', 0, 0),
+(UUID(), '69941578', 'MAS ISTIQOMAH', 'MA', 'SWASTA', 'Kab. Deli Serdang', 0, 0),
+(UUID(), '10214105', 'SMAS KRISTEN ANDREAS', 'SMA', 'SWASTA', 'Kab. Deli Serdang', 0, 0),
+(UUID(), '69991023', 'SMAK ST. ALOYSIUS', 'SMAK', 'SWASTA', 'Kota Palangka Raya', 0, 0),
+(UUID(), '10214113', 'SMAS CHANDRA KUMALA', 'SMA', 'SWASTA', 'Kab. Deli Serdang', 0, 0),
+(UUID(), '10211685', 'SMAS METHODIST', 'SMA', 'SWASTA', 'Kota Pematangsiantar', 0, 0),
+(UUID(), '10259546', 'SMAS HKBP GIRSANG SIPANGAN BOLON', 'SMA', 'SWASTA', 'Kab. Simalungun', 0, 0),
+(UUID(), '69992310', 'SMAS IT PERMATA HATI', 'SMA', 'SWASTA', 'Kota Tebing Tinggi', 0, 0),
+(UUID(), '60728341', 'MAS PP RAUDHATUL HASANAH', 'MA', 'SWASTA', 'Kota Medan', 0, 0),
+(UUID(), '10208654', 'SMKN 1 PARGETTENG GETTENG SENGKUT', 'SMK', 'NEGERI', 'Kab. Pakpak Bharat', 0, 0),
+(UUID(), '60728340', 'MAS LABORATORIUM IAIN SU', 'MA', 'SWASTA', 'Kota Medan', 0, 0),
+(UUID(), '10264661', 'SMKS YAPIM TARUNA SEI ROTAN', 'SMK', 'SWASTA', 'Kab. Deli Serdang', 0, 0),
+(UUID(), '69728149', 'MAS AL-WASHLIYAH DESA PAKAM', 'MA', 'SWASTA', 'Kab. Batu Bara', 0, 0),
+(UUID(), '10264780', 'MAS AL-WASHLIYAH', 'MA', 'SWASTA', 'Kota Tebing Tinggi', 0, 0);

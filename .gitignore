@@ -1,0 +1,37 @@
+# CodeIgniter Sessions, Cache & Logs
+application/cache/*
+!application/cache/index.html
+!application/cache/sessions/
+application/cache/sessions/*
+!application/cache/sessions/index.html
+application/logs/log-*.php
+!application/logs/index.html
+application/application.zip
+
+# Logs & temp text files
+*.log
+mpdf_error.txt
+sim_html_output.txt
+
+# Generated Excel exports
+laporan_excel/*.xlsx
+laporan_excel/uploads/*.xlsx
+rps_online_excel/*.xlsx
+
+# Temporary test outputs
+output*.pdf
+test*.pdf
+test*.js
+
+# Backup & Scratch
+application - sebelum review chunking/
+system_/
+scratch/
+scratch_*
+
+# OS & IDE files
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/

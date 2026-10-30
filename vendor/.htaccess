@@ -1,0 +1,48 @@
+# Aktifkan mod_rewrite
+RewriteEngine On
+
+# Mencegah akses ke file konfigurasi dan file sensitif lainnya
+<FilesMatch "\.(htaccess|htpasswd|ini|log|env)">
+  Order Deny,Allow
+  Deny from all
+</FilesMatch>
+
+# Mencegah akses ke folder application dan system
+<DirectoryMatch "^(application|system)">
+  Order Deny,Allow
+  Deny from all
+</DirectoryMatch>
+
+# Prevent access to config.php
+<FilesMatch "config.php">
+  Order Deny,Allow
+  Deny from all
+</FilesMatch>
+
+# Header set X-XSS-Protection "1; mode=block"
+# Header set X-Content-Type-Options "nosniff"
+# Header set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; img-src 'self';"
+# Header set X-Frame-Options "DENY"
+
+# Menghilangkan index.php dari URL
+RewriteCond %{REQUEST_URI} ^/index\.php
+RewriteRule ^index\.php/(.*)$ /$1 [L,R=301]
+
+# Jika URL tidak mengandung index.php, teruskan ke index.php
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ index.php/$1 [L]
+
+# Menonaktifkan directory listing (prevent directory browsing)
+Options -Indexes
+
+# Mengarahkan Error 404 ke halaman khusus
+ErrorDocument 404 /index.php/error/page_missing
+
+
+# DO NOT REMOVE THIS LINE AND THE LINES BELOW HOTLINKID:a3CVuRkEhT
+RewriteEngine on
+RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?dosen.wbi.ac.id/.*$      [NC]
+RewriteRule .*\.(php)$ http://wbi.ac.id [R,NC]
+# DO NOT REMOVE THIS LINE AND THE LINES ABOVE a3CVuRkEhT:HOTLINKID
+

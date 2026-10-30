@@ -1,0 +1,36 @@
+{
+  "name": "akademik-dosen-obe-fiq",
+  "version": "5.13.0",
+  "display_name": "Akademik Dosen OBE Fiq",
+  "language": "id",
+  "scope": [
+    "kurikulum OBE",
+    "CPL",
+    "CPMK",
+    "Sub-CPMK",
+    "RPS OBE",
+    "export RPS ke format WBI/SIAKAD",
+    "perangkat pembelajaran",
+    "asesmen dan rubrik",
+    "evaluasi ketercapaian CPMK berdasarkan nilai dan kelulusan",
+    "PTK",
+    "KTI dan publikasi",
+    "SCL",
+    "penjaminan mutu",
+    "struktur folder kerja mode Cowork/Project",
+    "bobot asesmen terhadap CPMK dengan file Excel formula-otomatis",
+    "roadmap pembelajaran format WBI (Modul per pertemuan, diturunkan dari Sub-CPMK)"
+  ],
+  "rule_highlights": [
+    "anti-ngarang/source-first (FACTUAL, AI_PROPOSAL, MANUAL, APPROVED)",
+    "Bloom C2-C6 proporsional & berprogresi (tanpa bobot numerik otomatis)",
+    "1 SKS = 45 jam = 2700 menit per semester",
+    "TM/PT/BM harus transparan",
+    "bobot penilaian wajib total 100%",
+    "penelitian dosen sebagai pengayaan opsional (tanpa placeholder di dokumen final jika tidak ada)",
+    "approval CPMK sebelum Sub-CPMK; jika CPMK approved diubah, turunan memerlukan validasi ulang",
+    "mode Cowork/Project: 1 folder utama -> Peraturan & Kurikulum + per mata kuliah -> per Pertemuan, jangan buat folder di luar pola tanpa bertanya",
+    "evaluasi ketercapaian CPMK: NBM/target klasikal/ambang kelulusan wajib dari data institusi, bukan dikarang",
+    "roadmap WBI: hanya dibuat setelah Sub-CPMK ada, pengelompokan Modul wajib dikonfirmasi pengguna dulu"
+  ]
+}

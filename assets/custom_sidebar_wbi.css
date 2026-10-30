@@ -1,0 +1,435 @@
+/* ==========================================================================
+   WBI Modern Emerald Green Sidebar & Layout Theme
+   ========================================================================== */
+
+/* 1. Header & Logo Area */
+.page-header.navbar {
+    background: #ffffff !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04) !important;
+}
+
+.page-header.navbar .page-logo {
+    background: #ffffff !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+}
+
+.page-header.navbar .page-logo .sidebar-toggler:before {
+    color: #475569 !important;
+}
+
+.page-header.navbar .page-logo .sidebar-toggler:hover:before {
+    color: #059669 !important;
+}
+
+/* Responsive Desktop Layout Width Synchronization (265px) */
+@media (min-width: 992px) {
+    .page-header.navbar .page-logo {
+        width: 265px !important;
+    }
+    .page-sidebar-wrapper,
+    .page-sidebar {
+        width: 265px !important;
+    }
+    .page-content-wrapper .page-content {
+        margin-left: 265px !important;
+    }
+    body.page-sidebar-closed .page-header.navbar .page-logo {
+        width: 54px !important;
+    }
+    body.page-sidebar-closed .page-sidebar-wrapper,
+    body.page-sidebar-closed .page-sidebar {
+        width: 54px !important;
+    }
+    body.page-sidebar-closed .page-content-wrapper .page-content {
+        margin-left: 54px !important;
+    }
+    .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover {
+        width: 265px !important;
+    }
+}
+
+/* 2. Sidebar Container & Gradient Background */
+.page-sidebar-wrapper,
+.page-sidebar,
+.page-sidebar.navbar-collapse {
+    background: linear-gradient(180deg, #0d9192 0%, #0a7778 40%, #064e4f 100%) !important;
+}
+
+.page-sidebar-menu {
+    padding-top: 8px !important;
+    padding-bottom: 40px !important;
+}
+
+/* 3. User Profile Card at Top of Sidebar */
+.sidebar-profile-card {
+    padding: 12px 14px;
+    margin: 4px 10px 14px 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(6px);
+}
+
+.sidebar-profile-card .profile-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.85);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    object-fit: cover;
+    flex-shrink: 0;
+    background: #08696a;
+}
+
+.sidebar-profile-card .profile-info {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-profile-card .profile-name {
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: 0.2px;
+}
+
+.sidebar-profile-card .profile-role {
+    color: #ccfbf1;
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* 4. Section / Category Heading */
+.sidebar-heading-modern {
+    padding: 14px 16px 6px 16px !important;
+    font-size: 10.5px !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    color: #99f6e4 !important;
+    letter-spacing: 1px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    list-style: none !important;
+}
+
+.sidebar-heading-modern i {
+    font-size: 11.5px !important;
+    color: #5eead4 !important;
+}
+
+/* 5. Main Menu Parent Items (Reset Metronic Default Borders & Margins) */
+.page-sidebar-menu > li,
+.page-sidebar .page-sidebar-menu > li,
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li {
+    margin: 3px 8px !important;
+    border: none !important;
+}
+
+.page-sidebar-menu > li > a,
+.page-sidebar .page-sidebar-menu > li > a,
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a {
+    border: none !important;
+    border-left: none !important;
+    border-radius: 8px !important;
+    padding: 9px 12px !important;
+    color: #f0fdfa !important;
+    background: transparent !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    display: flex !important;
+    align-items: center !important;
+    transition: all 0.2s ease-in-out !important;
+    text-decoration: none !important;
+    margin-left: 0 !important;
+    white-space: nowrap !important;
+}
+
+.page-sidebar-menu > li > a > i,
+.page-sidebar .page-sidebar-menu > li > a > i,
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li > a > i {
+    color: #a7f3d0 !important;
+    font-size: 15px !important;
+    margin-right: 10px !important;
+    width: 20px !important;
+    text-align: center !important;
+    flex-shrink: 0 !important;
+    transition: transform 0.2s ease !important;
+}
+
+.page-sidebar-menu > li > a > .title {
+    flex-grow: 1 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    letter-spacing: 0.1px !important;
+}
+
+/* Hover state for Parent Item */
+.page-sidebar-menu > li:hover > a,
+.page-sidebar .page-sidebar-menu > li:hover > a {
+    background: rgba(255, 255, 255, 0.14) !important;
+    color: #ffffff !important;
+}
+
+.page-sidebar-menu > li:hover > a > i,
+.page-sidebar .page-sidebar-menu > li:hover > a > i {
+    color: #ffffff !important;
+    transform: translateX(2px);
+}
+
+/* Active & Open Parent Item (like Akademik / Perwalian in image) */
+.page-sidebar-menu > li.active > a,
+.page-sidebar-menu > li.open > a,
+.page-sidebar-menu > li.active.open > a,
+.page-sidebar .page-sidebar-menu > li.active > a,
+.page-sidebar .page-sidebar-menu > li.open > a,
+.page-sidebar .page-sidebar-menu > li.active.open > a,
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active > a,
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu > li.active.open > a {
+    background: #08696a !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+    border-radius: 8px !important;
+    border-left: none !important;
+    margin-left: 0 !important;
+}
+
+.page-sidebar-menu > li.active > a > i,
+.page-sidebar-menu > li.open > a > i,
+.page-sidebar .page-sidebar-menu > li.active > a > i,
+.page-sidebar .page-sidebar-menu > li.open > a > i {
+    color: #ffffff !important;
+}
+
+/* Arrow indicator styling */
+.page-sidebar-menu > li > a > .arrow,
+.page-sidebar .page-sidebar-menu > li > a > .arrow {
+    margin-left: auto !important;
+    margin-right: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    flex-shrink: 0 !important;
+}
+
+.page-sidebar-menu > li > a > .arrow:before,
+.page-sidebar .page-sidebar-menu > li > a > .arrow:before {
+    color: #99f6e4 !important;
+    font-size: 11px !important;
+    float: none !important;
+    transition: transform 0.2s ease !important;
+}
+
+.page-sidebar-menu > li.open > a > .arrow:before,
+.page-sidebar-menu > li.active > a > .arrow:before,
+.page-sidebar .page-sidebar-menu > li.open > a > .arrow:before,
+.page-sidebar .page-sidebar-menu > li.active > a > .arrow:before {
+    color: #ffffff !important;
+}
+
+/* 6. Submenu Container */
+.page-sidebar .page-sidebar-menu .sub-menu,
+.page-sidebar-menu .sub-menu,
+.page-sidebar-closed .page-sidebar .page-sidebar-menu .sub-menu {
+    background: rgba(0, 0, 0, 0.24) !important;
+    border-radius: 10px !important;
+    margin: 4px 0 10px 0 !important;
+    padding: 6px !important;
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.18) !important;
+}
+
+.page-sidebar-menu .sub-menu > li,
+.page-sidebar .page-sidebar-menu .sub-menu > li {
+    margin: 2px 0 !important;
+    border: none !important;
+}
+
+/* Normal Submenu Item */
+.page-sidebar-menu .sub-menu > li > a,
+.page-sidebar .page-sidebar-menu .sub-menu > li > a,
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu > li > a {
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 7px 10px !important;
+    color: #ccfbf1 !important;
+    font-size: 12.5px !important;
+    font-weight: 500 !important;
+    display: flex !important;
+    align-items: center !important;
+    background: transparent !important;
+    transition: all 0.15s ease-in-out !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+}
+
+.page-sidebar-menu .sub-menu > li > a > i,
+.page-sidebar .page-sidebar-menu .sub-menu > li > a > i {
+    color: #5eead4 !important;
+    font-size: 13px !important;
+    margin-right: 9px !important;
+    width: 18px !important;
+    text-align: center !important;
+    flex-shrink: 0 !important;
+}
+
+.page-sidebar-menu .sub-menu > li > a > .title {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+/* Submenu Hover */
+.page-sidebar-menu .sub-menu > li:hover > a,
+.page-sidebar .page-sidebar-menu .sub-menu > li:hover > a,
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu > li:hover > a {
+    background: rgba(255, 255, 255, 0.14) !important;
+    color: #ffffff !important;
+}
+
+.page-sidebar-menu .sub-menu > li:hover > a > i,
+.page-sidebar .page-sidebar-menu .sub-menu > li:hover > a > i {
+    color: #ffffff !important;
+}
+
+/* 7. ACTIVE SUBMENU ITEM (Clear Vibrant Teal Highlight with Crisp White Text) */
+.page-sidebar-menu .sub-menu > li.active > a,
+.page-sidebar .page-sidebar-menu .sub-menu > li.active > a,
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu > li.active > a,
+.page-sidebar-menu .sub-menu > li.active:hover > a,
+.page-sidebar .page-sidebar-menu .sub-menu > li.active:hover > a {
+    background: #14b8a6 !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    box-shadow: 0 2px 10px rgba(20, 184, 166, 0.45) !important;
+    border-radius: 6px !important;
+}
+
+.page-sidebar-menu .sub-menu > li.active > a > i,
+.page-sidebar .page-sidebar-menu .sub-menu > li.active > a > i,
+.page-sidebar-menu .sub-menu > li.active:hover > a > i,
+.page-sidebar .page-sidebar-menu .sub-menu > li.active:hover > a > i {
+    color: #ffffff !important;
+}
+
+/* 8. Badges in Sidebar Menu */
+.page-sidebar-menu .badge,
+.page-sidebar .page-sidebar-menu .badge {
+    font-size: 10.5px !important;
+    font-weight: 700 !important;
+    padding: 2px 7px !important;
+    border-radius: 6px !important;
+    margin-left: auto !important;
+}
+
+.page-sidebar-menu .sub-menu > li.active > a .badge,
+.page-sidebar .page-sidebar-menu .sub-menu > li.active > a .badge {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* 9. Sleek Custom Scrollbar */
+.page-sidebar::-webkit-scrollbar,
+.page-sidebar-wrapper::-webkit-scrollbar {
+    width: 6px;
+}
+
+.page-sidebar::-webkit-scrollbar-track,
+.page-sidebar-wrapper::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.page-sidebar::-webkit-scrollbar-thumb,
+.page-sidebar-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.page-sidebar::-webkit-scrollbar-thumb:hover,
+.page-sidebar-wrapper::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+/* 10. COLLAPSED / MINI SIDEBAR STYLES (Mencegah elemen bocor saat sidebar ditutup) */
+body.page-sidebar-closed .sidebar-profile-card,
+body.page-sidebar-closed .sidebar-profile-item,
+body.page-sidebar-closed .sidebar-heading-modern,
+body.page-sidebar-closed .page-sidebar-menu > li.sidebar-profile-item,
+body.page-sidebar-closed .page-sidebar-menu > li.sidebar-heading-modern,
+.page-sidebar-closed .sidebar-profile-card,
+.page-sidebar-closed .sidebar-profile-item,
+.page-sidebar-closed .sidebar-heading-modern,
+.page-sidebar-closed .page-sidebar .sidebar-profile-card,
+.page-sidebar-closed .page-sidebar .sidebar-heading-modern {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    max-width: 0 !important;
+    max-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border: none !important;
+    pointer-events: none !important;
+}
+
+/* Tampilkan kembali saat hover di mode fixed collapsed */
+body.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .sidebar-profile-card,
+body.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .sidebar-profile-item,
+body.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .sidebar-heading-modern {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: auto !important;
+    height: auto !important;
+    max-width: none !important;
+    max-height: 100px !important;
+    overflow: visible !important;
+    pointer-events: auto !important;
+}
+
+body.page-sidebar-closed .page-sidebar-menu > li {
+    margin: 3px 4px !important;
+}
+
+body.page-sidebar-closed .page-sidebar-menu > li > a {
+    padding: 10px 0 !important;
+    text-align: center !important;
+    justify-content: center !important;
+}
+
+body.page-sidebar-closed .page-sidebar-menu > li > a > i {
+    margin-right: 0 !important;
+    font-size: 16px !important;
+    width: 100% !important;
+    text-align: center !important;
+}
+
+body.page-sidebar-closed .page-sidebar-menu > li:hover > .sub-menu {
+    background: #064e4f !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 0 8px 8px 8px !important;
+}
+
+body.page-sidebar-closed .page-sidebar-menu > li:hover > .sub-menu > li > a {
+    padding: 8px 14px !important;
+    color: #ccfbf1 !important;
+}

@@ -1,0 +1,19 @@
+# Nonaktifkan eksekusi PHP
+<FilesMatch "\.(php|phar|phtml)$">
+    Deny from all
+</FilesMatch>
+
+# Nonaktifkan mesin PHP
+php_flag engine off
+
+# Batasi hanya file tertentu yang diizinkan
+<FilesMatch "\.(jpg|jpeg|png|gif|pdf|docx|txt)$">
+    Allow from all
+</FilesMatch>
+<FilesMatch "\.(php|php5|php7|sh|pl|cgi)$">
+    Deny from all
+</FilesMatch>
+
+# Nonaktifkan indeks direktori
+Options -Indexes
+

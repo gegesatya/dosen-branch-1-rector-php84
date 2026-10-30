@@ -1,0 +1,27 @@
+{
+  "name": "wbi-spmi-dokumen-pembelajaran",
+  "version": "1.0.0",
+  "display_name": "WBI SPMI Dokumen Pembelajaran OBE",
+  "language": "id",
+  "parent_skill": "akademik-dosen-obe-fiq",
+  "scope": [
+    "formulir SPMI Politeknik WBI",
+    "RPS Lengkap 16 Pertemuan WBI",
+    "Kontrak Pembelajaran SPMI WBI",
+    "Rancangan Tugas Mahasiswa SPMI WBI",
+    "Roadmap Pembelajaran Modul WBI",
+    "json_roadmap schema",
+    "skala nilai huruf Politeknik WBI",
+    "protokol continuation prompting",
+    "sinkronisasi single source of truth RPS ke dokumen turunan"
+  ],
+  "rule_highlights": [
+    "memperluas skill akademik-dosen-obe-fiq dengan format formulir SPMI Politeknik WBI",
+    "strict canonical format tanpa preamble dan tanpa penutup tanda tangan",
+    "prasyarat wajib 'Tidak ada' jika tidak ada di kurikulum resmi (dilarang mengarang)",
+    "konektivitas total antar dokumen: Kontrak, Tugas, dan Roadmap wajib 100% selaras dengan Master RPS",
+    "Bloom C4-C6 only tanpa mencantumkan label (C4)/(C5) di teks naskah",
+    "1 SKS = 45 jam = 2700 menit per semester (TM/PT/BM transparan)",
+    "skala nilai resmi WBI: A (4.00, >=85), B+ (3.50, 75-84), B (3.00, 70-74), C+ (2.50, 65-69), C (2.00, 55-64), D (1.00, 45-54), E (0.00, <45)"
+  ]
+}

@@ -1,0 +1,695 @@
+<?php
+defined('BASEPATH') or exit('No direct script access allowed');
+
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
+
+class C_daftar_rps_lama extends CI_Controller
+{
+	public function __construct()
+	{
+		parent::__construct();
+		$this->load->model('Rps_online_model', 'Rps_online_model');
+		date_default_timezone_set("Asia/Jakarta");
+
+		if (!$this->ion_auth->logged_in()) {
+			redirect('auth/login', 'refresh');
+		}
+
+		$group = [2, 15];
+		if (!$this->ion_auth->in_group($group)) {
+			redirect('auth/logout', 'refresh');
+		}
+	}
+
+	public function index()
+	{
+
+		$setting = $this->db->get('siakad_setting')->row();
+		$tgl_akhir_rps = $setting->tgl_akhir_rps;
+
+		if (strtotime($tgl_akhir_rps) < strtotime(date('Y-m-d H:i:s'))) {
+			$this->session->set_flashdata('msg_rps', 'Periode pengisian RPS sudah berakhir.');
+		}
+
+		$output['judul_besar'] = 'Daftar RPS Lama (Arsip)';
+		$output['judul_kecil'] = 'Politeknik WBI';
+		$output['menu_aktif'] = 'm_rps_lama';
+		$output['parent_ws'] = 'active open';
+		$output['content'] = 'rps_lama/rps_lama_view';
+		$output['after_page'] = 'rps_lama/rps_lama_after_page';
+		$output['dd_koordinator'] = $this->Rps_online_model->f_dropdown2('siakad_rps_koordinator', 'koordinator_rps', 'nm_koordinator', 'nm_koordinator', ['aktif' => 1]);
+
+		$this->load->view('master_page', $output);
+	}
+
+	public function ajax_list()
+	{
+		$setting = $this->db->get('siakad_setting')->row();
+		$tgl_akhir_rps = $setting->tgl_akhir_rps;
+
+		$list = $this->Rps_online_model->get_datatables();
+		$data = [];
+		$no = $_POST['start'];
+		foreach ($list as $l) {
+			$no++;
+			$row = [];
+
+			$html_preview = '<a href="' . site_url('C_daftar_rps_lama/preview_rps/' . md5($l->id_rps)) . '" class="btn btn-default btn-sm btn-block margin-bottom-5" target="_new"  title="Preview RPS">
+								RPS Format Lama </a>';
+			// $html_preview2 = '<a href="' . site_url('C_daftar_rps_lama/preview_rps_baru/' . md5($l->id_rps)) . '" class="btn btn-default btn-sm btn-block margin-bottom-5" target="_new"  title="Preview RPS">
+			// 					RPS Format Baru</a>';
+
+			$mk_prodi = $this->db->where(['id_rps' => $l->id_rps, 'kk.id_smt' => $this->session->userdata('id_smt')])
+				->select('*')->from('siakad_rps_mk_prodi mkp')
+				->join('feeder_mata_kuliah mk', 'mk.id_mk = mkp.id_mk')
+				->join('feeder_kelas_kuliah kk', 'kk.id_mk = mk.id_mk')
+				->join('sms s', 's.id_sms = mk.id_sms')
+				->group_by('mkp.id_mk')
+				->get();
+
+			$prodi = $kode_mk = $nm_mk = $smt = $sks = '';
+			if ($mk_prodi->num_rows() > 0) {
+				foreach ($mk_prodi->result() as $key => $value) {
+					$prodi .= $value->nm_prodi_english . '<br>';
+					$nm_mk .= '[' . $value->kode_mk . '] ' . $value->nm_mk . '<br>';
+					$smt .= substr($value->nm_kls, 1, 1) . '<br>';
+					$sks .= $value->sks_mk * 1 . '<br>';
+				}
+			}
+
+			$tgl_pembuatan = (!empty($l->tanggal_rps) && $l->tanggal_rps != '0000-00-00') ? tgl_indo($l->tanggal_rps) : ((!empty($l->create_date) && $l->create_date != '0000-00-00 00:00:00') ? tgl_indo(date('Y-m-d', strtotime($l->create_date))) : '-');
+
+			$row[] = $no;
+			$row[] = '<div style="font-weight: 600; font-size: 13px; color: #1e293b;">' . $l->general_mk . '</div><div style="margin-top: 3px;"><small class="text-muted"><b>Koordinator :</b> ' . $l->nm_koordinator . '</small></div><div style="margin-top: 3px;"><small class="text-muted"><i class="fa fa-calendar text-primary" style="margin-right: 4px;"></i><b>Tgl Pembuatan :</b> ' . $tgl_pembuatan . '</small></div>';
+
+			// $row[] = $nm_mk . 'Program Studi : ' . $prodi . 'Semester : ' . $smt . 'SKS : ' . $sks;
+
+
+			$html = '<a href="javascript:void(0)" class="btn btn-sm btn-default btn-block margin-bottom-5"  title="Upload Detail RPS"
+				onclick="form_upload(\'' . $l->id_rps . '\')">
+				<i class="fa fa-upload"></i> Upload Rincian Pertemuan</a>';
+
+			$row[] = $html_preview . '<a class="btn btn-default btn-block btn-sm" 
+				href="' . site_url('C_daftar_rps_lama/convert/' . $l->id_rps) . '" 
+				title="Convert Ke Excel">
+				<i class="fa fa-file-excel-o "></i> Convert</a>';
+
+			// if ($l->is_lock == 'N') {
+			// 	if (strtotime($tgl_akhir_rps) < strtotime(date('Y-m-d H:i:s'))) {
+			// 		$row[] = '';
+			// 		$row[] = '';
+			// 	} else {
+			// 		$row[] = $html;
+			// 		$row[] = '<a class="btn btn-primary btn-sm" 
+			// 					href="javascript:void()" 
+			// 					title="Edit" 
+			// 					onclick="edit_rps(\'' . $l->id_rps . '\')">
+			// 					<i class="glyphicon glyphicon-pencil"></i>
+			// 				</a>
+			// 				<a class="btn btn-danger btn-sm" 
+			// 					href="javascript:void()" 
+			// 					title="Delete" onclick="delete_rps(\'' . $l->id_rps . '\')">
+			// 					<i class="glyphicon glyphicon-trash"></i>
+			// 				</a>';
+			// 	}
+			// } else {
+			// 	$row[] = '';
+			// 	$row[] = '';
+			// }
+			if (strtotime($tgl_akhir_rps) < strtotime(date('Y-m-d H:i:s'))) {
+				$row[] = '';
+				$row[] = '';
+			} else {
+				// $row[] = $html;
+				// $row[] = $html . '<a class="btn btn-primary btn-sm btn-block margin-bottom-5" 
+				// 				href="javascript:void()" 
+				// 				title="Edit" 
+				// 				onclick="edit_rps(\'' . $l->id_rps . '\')">
+				// 				<i class="glyphicon glyphicon-pencil"></i> Edit RPS
+				// 			</a>
+				// 			<a class="btn btn-danger btn-sm btn-block margin-bottom-5" 
+				// 				href="javascript:void()" 
+				// 				title="Delete" onclick="delete_rps(\'' . $l->id_rps . '\')">
+				// 				<i class="glyphicon glyphicon-trash"></i> Delete
+				// 			</a>';
+			}
+
+
+
+
+			$data[] = $row;
+		}
+
+		$output = [
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->Rps_online_model->count_all(),
+			"recordsFiltered" => $this->Rps_online_model->count_filtered(),
+			"data" => $data,
+		];
+		//output to json format
+		echo json_encode($output);
+	}
+
+	public function tambah()
+	{
+		$setting = $this->db->get('siakad_setting')->row();
+		$tgl_akhir_rps = $setting->tgl_akhir_rps;
+
+		if (strtotime($tgl_akhir_rps) < strtotime(date('Y-m-d H:i:s'))) {
+			$this->session->set_flashdata('msg_rps', 'Periode pengisian RPS sudah berakhir.');
+		}
+
+		$output['judul_besar'] = 'Tambah RPS';
+		$output['judul_kecil'] = 'Politeknik WBI';
+		$output['menu_aktif'] = 'm_rps_tambah';
+		$output['parent_ws'] = 'active open';
+		$output['content'] = 'rps_online/rps_online_tambah_view';
+		$output['after_page'] = 'rps_online/rps_online_tambah_after_page';
+		$output['dd_koordinator'] = $this->Rps_online_model->f_dropdown2('siakad_rps_koordinator', 'koordinator_rps', 'nm_koordinator', 'nm_koordinator', ['aktif' => 1]);
+
+		$this->load->view('master_page', $output);
+	}
+
+	public function ajax_edit($id)
+	{
+		$data = $this->Rps_online_model->get_by_id($id);
+		echo json_encode($data);
+	}
+
+	public function ajax_add()
+	{
+		//$this->_validate();
+		$data = [
+			'id_ptk' => $this->session->userdata('id_ptk'),
+			'koordinator_rps' => $this->input->post('koordinator_rps'),
+			'tanggal_rps' => $this->input->post('tanggal_rps'),
+			'general_mk' => $this->input->post('general_mk'),
+			'deskripsi_mata_kuliah' => $this->input->post('deskripsi_mata_kuliah'),
+			'capaian_pembelajaran_mata_kuliah' => $this->input->post('capaian_pembelajaran_mata_kuliah'),
+			'cpl' => $this->input->post('cpl'),
+			'tujuan_belajar' => $this->input->post('tujuan_belajar'),
+			'referensi' => $this->input->post('referensi'),
+			'id_status_pengajuan_rps' => 1,
+			// 'capaian_sikap' => $this->input->post('capaian_sikap'),
+			// 'capaian_pengetahuan' => $this->input->post('capaian_pengetahuan'),
+			// 'capaian_keterampilan_umum' => $this->input->post('capaian_keterampilan_umum'),
+			// 'capaian_keterampilan_khusus' => $this->input->post('capaian_keterampilan_khusus'),
+			'tugas_mahasiswa' => $this->input->post('tugas_mahasiswa'),
+			'create_by' => $this->ion_auth->user()->row()->email,
+			'create_date' => date('Y-m-d H:i:s')
+		];
+		$insert = $this->Rps_online_model->save($data);
+
+		if ($insert) {
+			echo json_encode(["status" => TRUE, "redirect" => site_url('C_daftar_rps_lama')]);
+		}
+	}
+
+	public function ajax_update()
+	{
+		//$this->_validate();
+		$data = [
+			'id_ptk' => $this->session->userdata('id_ptk'),
+			'koordinator_rps' => $this->input->post('koordinator_rps'),
+			'tanggal_rps' => $this->input->post('tanggal_rps'),
+			'general_mk' => $this->input->post('general_mk'),
+			'deskripsi_mata_kuliah' => $this->input->post('deskripsi_mata_kuliah'),
+			'capaian_pembelajaran_mata_kuliah' => $this->input->post('capaian_pembelajaran_mata_kuliah'),
+			'referensi' => $this->input->post('referensi'),
+			'dosen_pengampu' => $this->input->post('dosen_pengampu'),
+			'cpl' => $this->input->post('cpl'),
+			'tujuan_belajar' => $this->input->post('tujuan_belajar'),
+			// 'capaian_keterampilan_umum' => $this->input->post('capaian_keterampilan_umum'),
+			// 'capaian_keterampilan_khusus' => $this->input->post('capaian_keterampilan_khusus'),
+			'tugas_mahasiswa' => $this->input->post('tugas_mahasiswa'),
+			'change_by' => $this->ion_auth->user()->row()->email,
+			'change_date' => date('Y-m-d H:i:s')
+		];
+
+		$this->Rps_online_model->update(['id_rps' => $this->input->post('id_rps')], $data);
+		echo json_encode(["status" => TRUE]);
+	}
+
+	public function ajax_submit_rps($id_rps)
+	{
+		$data = [
+			'id_status_pengajuan_rps' => 2,
+			'change_by' => $this->ion_auth->user()->row()->email,
+			'change_date' => date('Y-m-d H:i:s')
+		];
+
+		$this->Rps_online_model->update(['id_rps' => $id_rps], $data);
+		echo json_encode(["status" => TRUE]);
+	}
+
+	public function ajax_delete($id)
+	{
+
+		/* $this->db->where('id_rps', $id);
+		$this->db->delete('siakad_rps_mk_prodi');
+		$this->db->where('id_rps', $id);
+		$this->db->delete('siakad_rps_online_detail'); */
+
+
+		$cek_data_mk_prodi = $this->db->where('id_rps', $id)->get('siakad_rps_mk_prodi');
+		$cek_data_detail_rps = $this->db->where('id_rps', $id)->get('siakad_rps_online_detail');
+
+		if ($cek_data_mk_prodi->num_rows() == 1 || $cek_data_detail_rps->num_rows() == 1) {
+			echo json_encode(["status" => FALSE, "pesan" => "Data tidak bisa dihapus karena RPS sudah dipakai di Mata Kuliah."]);
+		} else {
+			$this->Rps_online_model->delete_by_id($id);
+			echo json_encode(["status" => TRUE, "pesan" => "Data berhasil dihapus!"]);
+		}
+	}
+
+
+	public function save_excel()
+	{
+		$path = getcwd() . '/rps_online_excel/';
+
+		$config['upload_path'] = $path;
+		$config['allowed_types'] = 'xlsx|xls';
+		$config['remove_spaces'] = TRUE;
+		$config['encrypt_name'] = TRUE;
+		$this->load->library('upload', $config);
+		$this->upload->initialize($config);
+		if ($this->upload->do_upload('userfile')) {
+			$data = ['upload_data' => $this->upload->data()];
+			$import_xls_file = $data['upload_data']['file_name'];
+			$a = $this->edit_excel($path . $import_xls_file, $this->input->post('id_rps'));
+			$b = explode('|', $a);
+			//echo json_encode(array('status' => TRUE, 'message' => $b[0], 'tipe' => $b[1]));
+			$this->session->set_flashdata('sukses', $b[0]);
+			redirect($_SERVER["HTTP_REFERER"]);
+		} else {
+			//$data = array();
+			$error = $this->upload->display_errors();
+			$this->session->set_flashdata('error', $error);
+			redirect($_SERVER["HTTP_REFERER"]);
+		}
+	}
+
+	public function edit_excel($file_excel = '', $id_rps = null)
+	{
+		$pesan = $tipe = '';
+		try {
+			$reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+			//    $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+			//    $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xml();
+			//    $reader = new \PhpOffice\PhpSpreadsheet\Reader\Ods();
+			//    $reader = new \PhpOffice\PhpSpreadsheet\Reader\Slk();
+			//    $reader = new \PhpOffice\PhpSpreadsheet\Reader\Gnumeric();
+			//    $reader = new \PhpOffice\PhpSpreadsheet\Reader\Csv();
+			$reader->setLoadAllSheets();
+			$objPHPExcel = $reader->load($file_excel);
+
+			$allDataInSheet = $objPHPExcel->getActiveSheet()->toArray(null, true, true, true);
+
+			$arrayCount = count($allDataInSheet);
+			$flag = 0;
+			$createArray = ['KOLOM_1', 'KOLOM_2', 'KOLOM_3', 'KOLOM_4', 'KOLOM_5', 'KOLOM_6', 'KOLOM_7', 'KOLOM_8', 'KOLOM_9', 'KOLOM_10', 'KOLOM_11', 'KOLOM_12'];
+
+			$makeArray = [
+				'KOLOM_1' => 'KOLOM_1',
+				'KOLOM_2' => 'KOLOM_2',
+				'KOLOM_3' => 'KOLOM_3',
+				'KOLOM_4' => 'KOLOM_4',
+				'KOLOM_5' => 'KOLOM_5',
+				'KOLOM_6' => 'KOLOM_6',
+				'KOLOM_7' => 'KOLOM_7',
+				'KOLOM_8' => 'KOLOM_8',
+				'KOLOM_9' => 'KOLOM_9',
+				'KOLOM_10' => 'KOLOM_10',
+				'KOLOM_11' => 'KOLOM_11',
+				'KOLOM_12' => 'KOLOM_12'
+			];
+
+
+			$SheetDataKey = [];
+			foreach ($allDataInSheet as $dataInSheet) {
+				foreach ($dataInSheet as $key => $value) {
+					if (in_array(trim($value), $createArray)) {
+						$value = preg_replace('/\s+/', '', $value);
+						$SheetDataKey[trim($value)] = $key;
+					} else {
+					}
+				}
+			}
+
+			$data_diffs = array_diff_key($makeArray, $SheetDataKey);
+
+			if (empty($data_diffs)) {
+				$flag = 1;
+			}
+
+			if ($flag == 1) {
+				for ($i = 6; $i <= $arrayCount; $i++) {
+					$kolom_1 	= $SheetDataKey['KOLOM_1'];
+					$kolom_2 	= $SheetDataKey['KOLOM_2'];
+					$kolom_3 	= $SheetDataKey['KOLOM_3'];
+					$kolom_4 	= $SheetDataKey['KOLOM_4'];
+					$kolom_5 	= $SheetDataKey['KOLOM_5'];
+					$kolom_6 	= $SheetDataKey['KOLOM_6'];
+					$kolom_7 	= $SheetDataKey['KOLOM_7'];
+					$kolom_8 	= $SheetDataKey['KOLOM_8'];
+					$kolom_9 	= $SheetDataKey['KOLOM_9'];
+					$kolom_10 	= $SheetDataKey['KOLOM_10'];
+					$kolom_11 	= $SheetDataKey['KOLOM_11'];
+					$kolom_12 	= $SheetDataKey['KOLOM_12'];
+
+					$kolom_1 = filter_var(trim($allDataInSheet[$i][$kolom_1]), FILTER_SANITIZE_NUMBER_INT);
+					$kolom_2 = filter_var(trim($allDataInSheet[$i][$kolom_2]), FILTER_SANITIZE_NUMBER_INT);
+					$kolom_3 = filter_var(trim($allDataInSheet[$i][$kolom_3]), FILTER_SANITIZE_NUMBER_INT);
+					$kolom_4 = filter_var(trim($allDataInSheet[$i][$kolom_4]), FILTER_SANITIZE_NUMBER_INT);
+					$kolom_5 = filter_var(trim($allDataInSheet[$i][$kolom_5]), FILTER_SANITIZE_STRING);
+					$kolom_6 = filter_var(trim($allDataInSheet[$i][$kolom_6]), FILTER_SANITIZE_STRING);
+					$kolom_7 = filter_var(trim($allDataInSheet[$i][$kolom_7]), FILTER_SANITIZE_STRING);
+					$kolom_8 = filter_var(trim($allDataInSheet[$i][$kolom_8]), FILTER_SANITIZE_STRING);
+					$kolom_9 = filter_var(trim($allDataInSheet[$i][$kolom_9]), FILTER_SANITIZE_STRING);
+					$kolom_10 = filter_var(trim($allDataInSheet[$i][$kolom_10]), FILTER_SANITIZE_STRING);
+					$kolom_11 = filter_var(trim($allDataInSheet[$i][$kolom_11]), FILTER_SANITIZE_STRING);
+					$kolom_12 = filter_var(trim($allDataInSheet[$i][$kolom_12]), FILTER_SANITIZE_NUMBER_INT);
+
+
+					if ($kolom_1 != '' and $kolom_2 != '') {
+						$fetchData[] = [
+							'id_rps' => $id_rps,
+							'kolom_1' => $kolom_1,
+							'kolom_2' => $kolom_2,
+							'kolom_3' => $kolom_3,
+							'kolom_4' => $kolom_4,
+							'kolom_5' => str_ireplace(["\r\n", "\n", "\r"], '<br />', $kolom_5),
+							'kolom_6' => str_ireplace(["\r\n", "\n", "\r"], '<br />', $kolom_6),
+							'kolom_7' => str_ireplace(["\r\n", "\n", "\r"], '<br />', $kolom_7),
+							'kolom_8' => str_ireplace(["\r\n", "\n", "\r"], '<br />', $kolom_8),
+							'kolom_9' => str_ireplace(["\r\n", "\n", "\r"], '<br />', $kolom_9),
+							'kolom_10' => str_ireplace(["\r\n", "\n", "\r"], '<br />', $kolom_10),
+							'kolom_11' => str_ireplace(["\r\n", "\n", "\r"], '<br />', $kolom_11),
+							'kolom_12' => $kolom_12
+						];
+					}
+				}
+
+				//$this->add_data($fetchData);
+				$this->db->where('id_rps', $id_rps)->delete('siakad_rps_online_detail');
+				$this->db->insert_batch('siakad_rps_online_detail', $fetchData);
+				unlink($file_excel);
+				$pesan = "Import Data Berhasil.";
+				$tipe = 0;
+			} else {
+				$pesan = "Import data gagal, kolom tidak sesuai.";
+				$tipe = 1;
+			}
+
+			return $pesan . '|' . $tipe;
+		} catch (Exception $e) {
+			return 'Error';
+		}
+	}
+
+	public function preview_rps($id_rps = null)
+	{
+		$data_rps = $this->db->where('md5(id_rps)', $id_rps)
+			->select('so.*, nm_ptk')
+			->from('siakad_rps_online so')
+			->join('siakad_dosen sd', 'so.id_ptk = sd.id_ptk')
+			->get()->row();
+
+		$data_rps_detail = $this->db->where('md5(id_rps)', $id_rps)->get('siakad_rps_online_detail')->result();
+		$mk_prodi = $this->db->where(['md5(id_rps)' => $id_rps, 'kk.id_smt' => $this->session->userdata('id_smt')])
+			->select('*')->from('siakad_rps_mk_prodi mkp')
+			->join('feeder_mata_kuliah mk', 'mk.id_mk = mkp.id_mk')
+			->join('feeder_kelas_kuliah kk', 'kk.id_mk = mk.id_mk')
+			->join('sms s', 's.id_sms = mk.id_sms')
+			->group_by('mkp.id_mk')
+			->get()->result();
+
+
+		$koordinator = $this->db->where('koordinator_rps', $data_rps->koordinator_rps)->select('*')->from('siakad_rps_koordinator')->get();
+
+
+		$output['data_rps'] = $data_rps;
+		$output['data_rps_detail'] = $data_rps_detail;
+		$output['koordinator_rps'] = $koordinator;
+		$output['rps_kelola'] =  'NIL';
+		$output['mk_prodi'] =  $mk_prodi;
+
+		//$this->load->view('cetak/pdf_rps_online', $output);
+		//$mpdf->shrink_tables_to_fit = 1;
+		$html = $this->load->view('cetak/pdf_rps_online', $output, true);
+		$pdfFilePath  = 'RPS.pdf';
+		$mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => 'A4-L']);
+		//$mpdf->AddPage('L', '', '', '', '', 15, 10, 10, 10, 10, 10);
+
+		$mpdf->WriteHTML($html);
+		$mpdf->Output($pdfFilePath, "I");
+	}
+
+	public function preview_rps_baru($id_rps = null)
+	{
+		$data_rps = $this->db->where('md5(id_rps)', $id_rps)
+			->select('so.*, nm_ptk')
+			->from('siakad_rps_online so')
+			->join('siakad_dosen sd', 'so.id_ptk = sd.id_ptk')
+			->get()->row();
+
+		$data_rps_detail = $this->db->where('md5(id_rps)', $id_rps)->get('siakad_rps_online_detail')->result();
+		$mk_prodi = $this->db->where(['md5(id_rps)' => $id_rps, 'kk.id_smt' => $this->session->userdata('id_smt')])
+			->select('*')->from('siakad_rps_mk_prodi mkp')
+			->join('feeder_mata_kuliah mk', 'mk.id_mk = mkp.id_mk')
+			->join('feeder_kelas_kuliah kk', 'kk.id_mk = mk.id_mk')
+			->join('sms s', 's.id_sms = mk.id_sms')
+			->group_by('mkp.id_mk')
+			->get()->result();
+
+
+		$koordinator = $this->db->where('koordinator_rps', $data_rps->koordinator_rps)->select('*')->from('siakad_rps_koordinator')->get();
+
+
+		$output['data_rps'] = $data_rps;
+		$output['data_rps_detail'] = $data_rps_detail;
+		$output['koordinator_rps'] = $koordinator;
+		$output['rps_kelola'] =  'NIL';
+		$output['mk_prodi'] =  $mk_prodi;
+
+		//$this->load->view('cetak/pdf_rps_online', $output);
+		//$mpdf->shrink_tables_to_fit = 1;
+		$style = $this->load->view('cetak/rps/_pdf_rps_style', $output, true);
+		$html = $this->load->view('cetak/rps/rps_halaman_1_portrait', $output, true);
+		$html2 = $this->load->view('cetak/rps/rps_halaman_2_landscape', $output, true);
+		$pdfFilePath  = 'RPS.pdf';
+		$mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => 'A4-P']);
+
+		// $mpdf->WriteHTML($style, 1);
+		// $mpdf->WriteHTML($html, 2);
+
+		$mpdf->WriteHTML($style, \Mpdf\HTMLParserMode::HEADER_CSS);
+		$mpdf->WriteHTML($html, \Mpdf\HTMLParserMode::HTML_BODY);
+
+		$mpdf->AddPage('L');
+		$mpdf->WriteHTML($html2, \Mpdf\HTMLParserMode::HTML_BODY);
+		$mpdf->Output($pdfFilePath, "I");
+	}
+
+	public function download_template()
+	{
+		$this->load->helper('download');
+		force_download('rps_online_excel/template_rps_detail.xlsx', NULL);
+	}
+
+	public function convert($id_rps)
+	{
+		$spreadsheet = new Spreadsheet();
+		$sheet = $spreadsheet->getActiveSheet();
+
+		$style_col = [
+			'font' => ['bold' => true],
+			'alignment' => [
+				'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+				'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER
+			],
+			'borders' => [
+				'top' => ['borderStyle'  => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
+				'right' => ['borderStyle'  => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
+				'bottom' => ['borderStyle'  => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
+				'left' => ['borderStyle'  => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]
+			]
+		];
+
+		$style_row = [
+			'alignment' => [
+				'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER
+			],
+			'borders' => [
+				'top' => ['borderStyle'  => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
+				'right' => ['borderStyle'  => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
+				'bottom' => ['borderStyle'  => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
+				'left' => ['borderStyle'  => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]
+			],
+		];
+
+		$style_row_tengah = [
+			'alignment' => [
+				'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+				'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER
+			],
+			'borders' => [
+				'top' => ['borderStyle'  => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
+				'right' => ['borderStyle'  => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
+				'bottom' => ['borderStyle'  => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
+				'left' => ['borderStyle'  => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]
+			]
+		];
+
+		/* $sheet->setCellValue('A1', "DATA PENGABDIAN");
+		$sheet->mergeCells('A1:E1');
+		$sheet->getStyle('A1')->getFont()->setBold(true); */
+
+		$sheet->mergeCells('H2:I2');
+
+		$sheet->setCellValue('A1', "KOLOM_1");
+		$sheet->setCellValue('B1', "KOLOM_2");
+		$sheet->setCellValue('C1', "KOLOM_3");
+		$sheet->setCellValue('D1', "KOLOM_4");
+		$sheet->setCellValue('E1', "KOLOM_5");
+		$sheet->setCellValue('F1', "KOLOM_6");
+		$sheet->setCellValue('G1', "KOLOM_7");
+		$sheet->setCellValue('H1', "KOLOM_8");
+		$sheet->setCellValue('I1', "KOLOM_9");
+		$sheet->setCellValue('J1', "KOLOM_10");
+		$sheet->setCellValue('K1', "KOLOM_11");
+		$sheet->setCellValue('L1', "KOLOM_12");
+
+		$sheet->setCellValue('A2', "Minggu-Ke");
+		$sheet->setCellValue('B2', "Pertemuan");
+		$sheet->setCellValue('C2', "TEORI");
+		$sheet->setCellValue('D2', "PRAKTEK");
+		$sheet->setCellValue('E2', "Referensi");
+		$sheet->setCellValue('F2', "Kemampuan Akhir Tiap Tahapan Belajar");
+		$sheet->setCellValue('G2', "Bahan Kajian (Materi dan Pustaka)");
+		$sheet->setCellValue('H2', "Metode Pembelajaran (Bentuk dan WAktu)");
+		$sheet->setCellValue('J2', "Pengalaman Belajar (Evaluasi)");
+		$sheet->setCellValue('K2', "Kriteria/Indikator Penilaian");
+		$sheet->setCellValue('L2', "Bobot Penilaian");
+
+		$sheet->setCellValue('H3', "Luring");
+		$sheet->setCellValue('I3', "Daring");
+
+		$sheet->setCellValue('C3', "(Menit)");
+		$sheet->setCellValue('D3', "(Menit)");
+
+		$sheet->setCellValue('A4', "(1)");
+		$sheet->setCellValue('B4', "(2)");
+		$sheet->setCellValue('C4', "(3)");
+		$sheet->setCellValue('D4', "(4)");
+		$sheet->setCellValue('E4', "(5)");
+		$sheet->setCellValue('F4', "(6)");
+		$sheet->setCellValue('G4', "(7)");
+		$sheet->setCellValue('H4', "(8)");
+		$sheet->setCellValue('I4', "(9)");
+		$sheet->setCellValue('J4', "(10)");
+		$sheet->setCellValue('K4', "(11)");
+		$sheet->setCellValue('L4', "(12)");
+
+		$sheet->setCellValue('A5', "Integer");
+		$sheet->setCellValue('B5', "Integer");
+		$sheet->setCellValue('C5', "Text");
+		$sheet->setCellValue('D5', "Text");
+		$sheet->setCellValue('E5', "Text");
+		$sheet->setCellValue('F5', "Text");
+		$sheet->setCellValue('G5', "Text");
+		$sheet->setCellValue('H5', "Text");
+		$sheet->setCellValue('I5', "Text");
+		$sheet->setCellValue('J5', "Text");
+		$sheet->setCellValue('K5', "Text");
+		$sheet->setCellValue('L5', "Integer");
+
+		$sheet->getStyle('A1:A5')->applyFromArray($style_col);
+		$sheet->getStyle('B1:B5')->applyFromArray($style_col);
+		$sheet->getStyle('C1:C5')->applyFromArray($style_col);
+		$sheet->getStyle('D1:D5')->applyFromArray($style_col);
+		$sheet->getStyle('E1:E5')->applyFromArray($style_col);
+		$sheet->getStyle('F1:F5')->applyFromArray($style_col);
+		$sheet->getStyle('G1:G5')->applyFromArray($style_col);
+		$sheet->getStyle('H1:H5')->applyFromArray($style_col);
+		$sheet->getStyle('I1:I5')->applyFromArray($style_col);
+		$sheet->getStyle('J1:J5')->applyFromArray($style_col);
+		$sheet->getStyle('K1:K5')->applyFromArray($style_col);
+		$sheet->getStyle('L1:L5')->applyFromArray($style_col);
+
+
+		$data_rps_master = $this->db->where(compact('id_rps'))->get('siakad_rps_online')->row();
+		$jabfung = $this->Rps_online_model->get_excel_data($id_rps);
+
+		$no = 1;
+		$numrow = 6;
+		foreach ($jabfung as $data) {
+			$sheet->setCellValue('A' . $numrow, $no);
+			//$clean = preg_replace('/[^(\x20-\x7F)\x0A\x0D]*/', '', $data->judul_penelitian_pengabdian);
+			$sheet->setCellValue('A' . $numrow, $data->kolom_1);
+			$sheet->setCellValue('B' . $numrow, $data->kolom_2);
+			$sheet->setCellValue('C' . $numrow, $data->kolom_3);
+			$sheet->setCellValue('D' . $numrow, $data->kolom_4);
+			$sheet->setCellValue('E' . $numrow, $data->kolom_5);
+			$sheet->setCellValue('F' . $numrow, $data->kolom_6);
+			$sheet->setCellValue('G' . $numrow, $data->kolom_7);
+			$sheet->setCellValue('H' . $numrow, $data->kolom_8);
+			$sheet->setCellValue('I' . $numrow, $data->kolom_9);
+			$sheet->setCellValue('J' . $numrow, $data->kolom_10);
+			$sheet->setCellValue('K' . $numrow, $data->kolom_11);
+			$sheet->setCellValue('L' . $numrow, $data->kolom_12);
+
+			$sheet->getStyle('A' . $numrow)->applyFromArray($style_row);
+			$sheet->getStyle('B' . $numrow)->applyFromArray($style_row);
+			$sheet->getStyle('C' . $numrow)->applyFromArray($style_row);
+			$sheet->getStyle('D' . $numrow)->applyFromArray($style_row);
+			$sheet->getStyle('E' . $numrow)->applyFromArray($style_row);
+			$sheet->getStyle('F' . $numrow)->applyFromArray($style_row);
+			$sheet->getStyle('G' . $numrow)->applyFromArray($style_row);
+			$sheet->getStyle('H' . $numrow)->applyFromArray($style_row);
+			$sheet->getStyle('I' . $numrow)->applyFromArray($style_row);
+			$sheet->getStyle('J' . $numrow)->applyFromArray($style_row);
+			$sheet->getStyle('K' . $numrow)->applyFromArray($style_row);
+			$sheet->getStyle('L' . $numrow)->applyFromArray($style_row);
+
+			$sheet->getStyle('E' . $numrow)->getAlignment()->setWrapText(true);
+			$sheet->getStyle('F' . $numrow)->getAlignment()->setWrapText(true);
+			$sheet->getStyle('G' . $numrow)->getAlignment()->setWrapText(true);
+			$sheet->getStyle('H' . $numrow)->getAlignment()->setWrapText(true);
+			$sheet->getStyle('I' . $numrow)->getAlignment()->setWrapText(true);
+			$sheet->getStyle('J' . $numrow)->getAlignment()->setWrapText(true);
+			$sheet->getStyle('K' . $numrow)->getAlignment()->setWrapText(true);
+			$sheet->getStyle('L' . $numrow)->getAlignment()->setWrapText(true);
+
+			$no++;
+			$numrow++;
+		}
+
+		$sheet->getColumnDimension('A')->setWidth(13);
+		$sheet->getColumnDimension('B')->setWidth(13);
+		$sheet->getColumnDimension('C')->setWidth(13);
+		$sheet->getColumnDimension('D')->setWidth(13);
+		$sheet->getColumnDimension('E')->setWidth(45);
+		$sheet->getColumnDimension('F')->setWidth(45);
+		$sheet->getColumnDimension('G')->setWidth(45);
+		$sheet->getColumnDimension('H')->setWidth(45);
+		$sheet->getColumnDimension('I')->setWidth(45);
+		$sheet->getColumnDimension('J')->setWidth(45);
+		$sheet->getColumnDimension('K')->setWidth(45);
+		$sheet->getColumnDimension('L')->setWidth(45);
+
+		$sheet->getDefaultRowDimension()->setRowHeight(-1);
+		$sheet->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+		$sheet->setTitle("Pengabdian");
+
+		header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+		header('Content-Disposition: attachment; filename= ' . $data_rps_master->general_mk . '".xlsx"'); // Set nama file excel nya
+		header('Cache-Control: max-age=0');
+
+		$writer = new Xlsx($spreadsheet);
+		$writer->save('php://output');
+	}
+}

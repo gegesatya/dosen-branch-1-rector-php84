@@ -1,0 +1,16 @@
+INSERT IGNORE INTO dapo_sekolah (id, npsn, sekolah, bentuk, status, kabupaten_kota, lintang, bujur) VALUES 
+(UUID(), '69900874', 'SMAS BERSINAR', 'SMA', 'SWASTA', 'Kab. Deli Serdang', 0, 0),
+(UUID(), '10259968', 'SMKS ERA UTAMA', 'SMK', 'SWASTA', 'Kab. Deli Serdang', 0, 0),
+(UUID(), '12250102', 'SMAS SISINGAMANGARAJA', 'SMA', 'SWASTA', 'Kota Tanjungbalai', 0, 0),
+(UUID(), '69983389', 'MAS PON-PES DARUL QUR''AN', 'MA', 'SWASTA', 'Kab. Deli Serdang', 0, 0),
+(UUID(), '10259348', 'SMKS AR-RAHMAN', 'SMK', 'SWASTA', 'Kota Medan', 0, 0),
+(UUID(), '10258039', 'SMAS CERDAS MURNI', 'SMA', 'SWASTA', 'Kab. Deli Serdang', 0, 0),
+(UUID(), '10214124', 'SMAS CITRA HARAPAN', 'SMA', 'SWASTA', 'Kab. Deli Serdang', 0, 0),
+(UUID(), '10257832', 'SMAS GAJAH MADA', 'SMA', 'SWASTA', 'Kota Medan', 0, 0),
+(UUID(), '10264715', 'MAS PP MAWARIDUSSALAM', 'MA', 'SWASTA', 'Kab. Deli Serdang', 0, 0),
+(UUID(), '10211244', 'SMKS GAJAH MADA', 'SMK', 'SWASTA', 'Kota Medan', 0, 0),
+(UUID(), '69756886', 'SMKS TUNAS HARAPAN', 'SMK', 'SWASTA', 'Kab. Langkat', 0, 0),
+(UUID(), '10209425', 'SMAS SETIA BUDI ABADI PERBAUNGAN', 'SMA', 'SWASTA', 'Kab. Serdang Bedagai', 0, 0),
+(UUID(), '10210940', 'SMKS PULAU BERAYAN DARAT', 'SMK', 'SWASTA', 'Kota Medan', 0, 0),
+(UUID(), '70008912', 'SMKS ADVENT TELADAN', 'SMK', 'SWASTA', 'Kab. Labuhanbatu Selatan', 0, 0),
+(UUID(), '10261476', 'SMKS KARYA BUNDA MANDIRI', 'SMK', 'SWASTA', 'Kab. Deli Serdang', 0, 0);

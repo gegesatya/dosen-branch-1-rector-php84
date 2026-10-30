@@ -1,0 +1,258 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Nilai_model extends CI_Model {
+
+    public $table = 'feeder_kelas_kuliah';
+    public $column = ['nm_mk']; //set column field database for order and search
+    public $column2 = ['nm_pd']; //set column field database for order and search
+    public $order = ['nm_kls' => 'asc']; // default order 
+    public $order2 = ['nm_pd' => 'asc']; // default order 
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->database();
+        
+    }
+
+    private function _get_datatables_query()
+    {
+        $user = $this->ion_auth->user()->row();
+        $this->db->from($this->table);
+        $this->db->join('feeder_mata_kuliah', 'feeder_mata_kuliah.id_mk = feeder_kelas_kuliah.id_mk');
+        $this->db->where('feeder_kelas_kuliah.id_smt', $this->session->userdata('tahun_ajaran'));
+        //$this->db->where('feeder_kelas_kuliah.id_sms', $this->session->userdata('prodi'));
+        $this->db->where('feeder_kelas_kuliah.id_ptk', $user->id_ptk);
+
+        $i = 0;
+    
+        foreach ($this->column as $item) // loop column 
+        {
+            if($_POST['search']['value']) // if datatable send POST for search
+            {
+                
+                if($i===0) // first loop
+                {
+                    $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND. 
+                    $this->db->like($item, $_POST['search']['value']);
+                }
+                else
+                {
+                    $this->db->or_like($item, $_POST['search']['value']);
+                }
+
+                if(count($this->column) - 1 == $i) //last loop
+                    $this->db->group_end(); //close bracket
+            }
+            $column[$i] = $item; // set column array variable to order processing
+            $i++;
+        }
+        
+        if(isset($_POST['order'])) // here order processing
+        {
+            $this->db->order_by($column[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+        } 
+        else if(isset($this->order))
+        {
+            $order = $this->order;
+            $this->db->order_by(key($order), $order[key($order)]);
+        }
+    }
+
+    private function _get_nilai_datatables_query($id_kls)
+    {
+        
+        $this->db->from('feeder_nilai');
+        $this->db->join('mahasiswa_pt', 'mahasiswa_pt.id_reg_pd = feeder_nilai.id_reg_pd');
+        $this->db->join('mahasiswa', 'mahasiswa.id_pd = mahasiswa_pt.id_pd');
+        //$this->db->where('feeder_nilai.id_smt', $this->session->userdata('tahun_ajaran'));
+        $this->db->where('feeder_nilai.id_kls', $id_kls);
+
+        $i = 0;
+    
+        foreach ($this->column2 as $item) // loop column 
+        {
+            if($_POST['search']['value']) // if datatable send POST for search
+            {
+                
+                if($i===0) // first loop
+                {
+                    $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND. 
+                    $this->db->like($item, $_POST['search']['value']);
+                }
+                else
+                {
+                    $this->db->or_like($item, $_POST['search']['value']);
+                }
+
+                if(count($this->column2) - 1 == $i) //last loop
+                    $this->db->group_end(); //close bracket
+            }
+            $column2[$i] = $item; // set column array variable to order processing
+            $i++;
+        }
+        
+        if(isset($_POST['order'])) // here order processing
+        {
+            $this->db->order_by($column2[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+        } 
+        else if(isset($this->order2))
+        {
+            $order2 = $this->order2;
+            $this->db->order_by(key($order2), $order2[key($order2)]);
+        }
+    }
+
+    public function get_datatables()
+    {
+        $this->_get_datatables_query();
+        if($_POST['length'] != -1)
+        $this->db->limit($_POST['length'], $_POST['start']);
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+     public function get_nilai_datatables($id_kls)
+    {
+        $this->_get_nilai_datatables_query($id_kls);
+        if($_POST['length'] != -1)
+        $this->db->limit($_POST['length'], $_POST['start']);
+        $query = $this->db->get();
+        return $query->result();
+    }   
+
+    public function count_filtered()
+    {
+        $this->_get_datatables_query();
+        $query = $this->db->get();
+        return $query->num_rows();
+    }
+
+    public function count_all()
+    {
+        $this->db->where('feeder_kelas_kuliah.id_smt', $this->session->userdata('tahun_ajaran'));
+        $this->db->where('feeder_kelas_kuliah.id_sms', $this->session->userdata('prodi'));
+        $this->db->from($this->table);
+        return $this->db->count_all_results();
+    }
+
+    public function count_filtered2($id_kls)
+    {
+        $this->_get_nilai_datatables_query($id_kls);
+        $query = $this->db->get();
+        return $query->num_rows();
+    }
+
+    public function count_all2($id_kls)
+    {
+       
+        $this->db->where('feeder_nilai.id_kls', $id_kls);
+        $this->db->from('feeder_nilai');
+        return $this->db->count_all_results();
+    }
+
+    public function get_by_id($id_kls)
+    {
+        $this->db->from($this->table);
+        $this->db->join('feeder_mata_kuliah', 'feeder_mata_kuliah.id_mk = feeder_kelas_kuliah.id_mk');
+        $this->db->where('id_kls',$id_kls);
+        $query = $this->db->get();
+
+        return $query->row();
+    }
+
+    public function get_nilai_by_id($id_kls, $id_reg_pd){
+        $this->db->select('mahasiswa.nm_pd, nilai_tugas, nilai_partisipasi, nilai_uts, nilai_uas, tugas, partisipasi, uts, uas');
+        $this->db->from('feeder_nilai');
+        $this->db->join('feeder_kelas_kuliah', 'feeder_kelas_kuliah.id_kls = feeder_nilai.id_kls');
+        $this->db->join('mahasiswa_pt', 'mahasiswa_pt.id_reg_pd = feeder_nilai.id_reg_pd');
+        //$this->db->join('feeder_kelas_kuliah', 'feeder_kelas_kuliah.id_kls = feeder_kelas_kuliah.id_kls');
+        $this->db->join('mahasiswa', 'mahasiswa.id_pd = mahasiswa_pt.id_pd');
+
+        $this->db->where(['feeder_nilai.id_kls'=>$id_kls, 'feeder_nilai.id_reg_pd'=>$id_reg_pd]);
+        $query = $this->db->get();
+
+        return $query->row();
+    }
+
+    public function save($data)
+    {
+        $data = $this->security->xss_clean($data);
+        $this->db->insert($this->table, $data);
+        return $this->db->insert_id();
+    }
+
+    public function update($where, $data)
+    {
+        $data = $this->security->xss_clean($data);
+        $this->db->update($this->table, $data, $where);
+        return $this->db->affected_rows();
+    }
+
+    public function update_nilai($where, $data)
+    {
+        $data = $this->security->xss_clean($data);
+        $this->db->update('feeder_nilai', $data, $where);
+        return $this->db->affected_rows();
+    }
+
+    public function hitung_totalsks($id_reg_pd){
+       //$id_reg_pd = $this->get_mahasiswa_pt($id_pd)->row()->id_reg_pd;
+
+       $sks_nilai_transfer = $this->db->where('id_reg_pd', $id_reg_pd)->select_sum('sks_diakui')->get('nilai_transfer')->row()->sks_diakui;
+       $sks_nilai = $this->db->select('sum(kk.sks_mk) as sks_mk')
+                                    ->from('feeder_nilai n')
+                                    ->join('feeder_kelas_kuliah kk', 'kk.id_kls = n.id_kls')
+                                    ->where('id_reg_pd', $id_reg_pd)
+                                    ->where('n.nilai_huruf !=', '')
+                                    ->get()->row()->sks_mk;
+
+       $total = $sks_nilai + $sks_nilai_transfer;
+
+       return $total;
+    }
+
+    public function hitung_total_nilai($id_reg_pd){
+       //$id_reg_pd = $this->get_mahasiswa_pt($id_pd)->row()->id_reg_pd;
+
+       $total_nilai_transfer = $this->db->where('id_reg_pd', $id_reg_pd)->select('sum(sks_diakui*nilai_angka_diakui) as hasil')->from('nilai_transfer')->get()->row()->hasil;
+       $total_nilai = $this->db->select('sum(kk.sks_mk*n.nilai_indeks) as hasil')
+                                    ->from('feeder_nilai n')
+                                    ->join('feeder_kelas_kuliah kk', 'kk.id_kls = n.id_kls')
+                                    ->where('id_reg_pd', $id_reg_pd)
+                                    ->where('n.nilai_huruf !=', '')
+                                    ->get()->row()->hasil;
+
+       $total = $total_nilai + $total_nilai_transfer;
+
+       return $total;
+    }
+
+    public function hitung_sks_semester($id_reg_pd, $id_smt){
+       
+       $sks_nilai = $this->db->select('sum(kk.sks_mk) as sks_mk')
+                                    ->from('feeder_nilai n')
+                                    ->join('feeder_kelas_kuliah kk', 'kk.id_kls = n.id_kls')
+                                    ->where('id_reg_pd', $id_reg_pd)
+                                    ->where('id_smt', $id_smt)
+                                    ->where('n.nilai_huruf !=', '')
+                                    ->get()->row()->sks_mk;
+       return $sks_nilai;
+    }
+
+    public function hitung_nilai_semester($id_reg_pd, $id_smt){
+      
+       $total_nilai = $this->db->select('sum(kk.sks_mk*n.nilai_indeks) as hasil')
+                                    ->from('feeder_nilai n')
+                                    ->join('feeder_kelas_kuliah kk', 'kk.id_kls = n.id_kls')
+                                    ->where('id_reg_pd', $id_reg_pd)
+                                    ->where('id_smt', $id_smt)
+                                    ->where('n.nilai_huruf !=', '')
+                                    ->get()->row()->hasil;
+       return $total_nilai;
+    }
+
+
+
+}

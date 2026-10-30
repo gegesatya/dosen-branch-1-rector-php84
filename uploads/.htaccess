@@ -1,0 +1,25 @@
+# ==========================
+# Keamanan Folder Uploads
+# ==========================
+
+# 1. Blokir Eksekusi File PHP di Folder Uploads
+<FilesMatch "\.(php|php5|phtml|phar|cgi|pl|py|asp|aspx|jsp|sh)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# 2. Blokir Eksekusi Script dari Subfolder Uploads
+SetHandler none
+RemoveHandler .php .php5 .phtml .phar
+
+# 3. Batasi Akses ke File Berbahaya
+<FilesMatch "(\.(htaccess|htpasswd|env|ini|log|sh|sql|bak|zip|tar|gz|config|git|md|exe|dll))$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# 4. Nonaktifkan Directory Listing (Mencegah Orang Melihat Isi Folder)
+Options -Indexes
+
+
+

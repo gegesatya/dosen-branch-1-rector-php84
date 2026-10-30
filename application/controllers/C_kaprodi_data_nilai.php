@@ -1,0 +1,189 @@
+<?php
+defined('BASEPATH') or exit('No direct script access allowed');
+
+class C_kaprodi_data_nilai extends CI_Controller
+{
+
+	public function __construct()
+	{
+		parent::__construct();
+		$this->load->model('Kaprodi_data_nilai_model', 'Kaprodi_data_nilai_model');
+		date_default_timezone_set("Asia/Jakarta");
+
+		if (!$this->ion_auth->logged_in()) {
+			redirect('auth/login', 'refresh');
+		}
+
+		$group = [5];
+		if (!$this->ion_auth->in_group($group)) {
+			return show_error('Halaman khusus untuk KAPRODI.');
+		}
+	}
+
+	public function index()
+	{
+		$output['judul_besar'] 		= 'Daftar Nilai Prodi ';
+		$output['judul_kecil'] 		= '';
+		$output['menu_aktif'] 		= 'm_kaprodi_data_nilai';
+		$output['parent_kaprodi']	= 'active open';
+		$output['content'] 			= 'kaprodi_data_nilai/kaprodi_data_nilai_view';
+		$output['after_page'] 		= 'kaprodi_data_nilai/kaprodi_data_nilai_after_page';
+		$output['master_page'] 		= 'ajax_pagination';
+
+		$this->load->view('master_page', $output);
+	}
+
+	public function ajax_list()
+	{
+		$list = $this->Kaprodi_data_nilai_model->get_datatables();
+		$data = [];
+		$no = $_POST['start'];
+		foreach ($list as $student) {
+			$html = '<a href="' . site_url("C_kaprodi_data_nilai/download_data_akademik/$student->nipd") . '" class="btn btn-sm btn-primary" target="_new">
+				<i class="icon-speedometer"></i> Download</a>';
+			$no++;
+			$row = [];
+			$row[] = $no;
+			$row[] = $student->nipd;
+			$row[] = $student->nm_pd;
+			$row[] = $student->nm_ptk;
+			$row[] = $html;
+
+			$data[] = $row;
+		}
+
+		$output = [
+			"draw" => $_POST['draw'],
+			"recordsTotal" => $this->Kaprodi_data_nilai_model->count_all(),
+			"recordsFiltered" => $this->Kaprodi_data_nilai_model->count_filtered(),
+			"data" => $data,
+		];
+
+		echo json_encode($output);
+	}
+
+	public function download_data_akademik($nipd)
+	{
+		$mahasiswa = $this->db->where('nipd', $nipd)
+			->select('m.nm_pd, mp.nipd, mp.id_reg_pd')
+			->from('mahasiswa m')
+			->join('mahasiswa_pt mp', 'm.id_pd = mp.id_pd')->get()->row();
+		$id_reg_pd = $mahasiswa->id_reg_pd;
+
+
+		$nilai_mahasiswa_1 = $this->db->where(['id_reg_pd' => $id_reg_pd])->select('mk.kode_mk, n.*, mk.nm_mk, mk.sks_mk, kk.id_smt')
+			->from('arsip_nilai n')
+			->join('siakad_kelas_kuliah kk', 'kk.id_kls = n.id_kls')
+			->join('mata_kuliah mk', 'mk.id_mk = kk.id_mk')
+			->order_by('id_smt')
+			->get();
+
+		$nilai_mahasiswa_2 = $this->db->where(['nipd' => $nipd])->select('mk.kode_mk, n.*, mk.nm_mk, mk.sks_mk, kk.id_smt')
+			->from('siakad_nilai_baru n')
+			->join('feeder_kelas_kuliah kk', 'kk.id_kls = n.id_kls')
+			->join('feeder_mata_kuliah mk', 'mk.id_mk = kk.id_mk')
+			->order_by('id_smt')
+			->get();
+
+
+
+
+		$this->load->library('table');
+		$table = "";
+		$tmpl = [
+			'table_open'          => '<table class="table table-black">',
+			'thead_open'          => '<thead>',
+			'thead_close'         => '</thead>',
+			'heading_row_start'   => '<tr>',
+			'heading_row_end'     => '</tr>',
+			'heading_cell_start'  => '<th class="text-center" style="vertical-align:middle">',
+			'heading_cell_end'    => '</th>',
+			'row_start'           => '<tr>',
+			'row_end'             => '</tr>',
+			'cell_start'          => '<td>',
+			'cell_end'            => '</td>',
+			'row_alt_start'       => '<tr>',
+			'row_alt_end'         => '</tr>',
+			'cell_alt_start'      => '<td>',
+			'cell_alt_end'        => '</td>',
+			'table_close'         => '</table>'
+		];
+
+		$this->table->set_template($tmpl);
+		$this->table->set_heading(['No', 'SMT', 'Kode/<br>Code', 'Mata Kuliah/Subjects', 'Lambang/<br>Mark', 'Mutu/<br>Quality', 'SKS/<br>Credit', 'Credit <br>X<br> Quality']);
+
+
+		$i = 1;
+
+		$jumlah = $jumlah_sks_mk = 0;
+
+		foreach ($nilai_mahasiswa_1->result() as $l_nilai) {
+			$hasil = $l_nilai->sks_mk * $l_nilai->nilai_indeks;
+			$this->table->add_row([
+				['data' => $i++ . '.', 'class' => 'text-right'],
+				$l_nilai->id_smt,
+				$l_nilai->kode_mk,
+				$l_nilai->nm_mk,
+				['data' => $l_nilai->nilai_huruf, 'class' => 'text-center'],
+				['data' => $l_nilai->nilai_indeks, 'class' => 'text-center'],
+				['data' => (int) $l_nilai->sks_mk, 'class' => 'text-center'],
+				['data' => $hasil, 'class' => 'text-center']
+			]);
+
+			$jumlah += $hasil;
+			if (!empty($l_nilai->nilai_huruf)) {
+				$jumlah_sks_mk += (int) $l_nilai->sks_mk;
+			}
+		}
+
+		foreach ($nilai_mahasiswa_2->result() as $l_nilai) {
+			$hasil = $l_nilai->sks_mk * $l_nilai->nilai_indeks;
+			$this->table->add_row([
+				['data' => $i++ . '.', 'class' => 'text-right'],
+				$l_nilai->id_smt,
+				$l_nilai->kode_mk,
+				$l_nilai->nm_mk,
+				['data' => $l_nilai->nilai_huruf, 'class' => 'text-center'],
+				['data' => $l_nilai->nilai_indeks, 'class' => 'text-center'],
+				['data' => (int) $l_nilai->sks_mk, 'class' => 'text-center'],
+				['data' => $hasil, 'class' => 'text-center']
+			]);
+
+			$jumlah += $hasil;
+			if (!empty($l_nilai->nilai_huruf)) {
+				$jumlah_sks_mk += (int) $l_nilai->sks_mk;
+			}
+		}
+
+		if ($jumlah_sks_mk == 0) {
+			$ips = 0;
+		} else {
+			$ips = round($jumlah / $jumlah_sks_mk, 2);
+		}
+
+		$this->table->add_row([
+			['data' => 'Jumlah SKS / <i>Semester Credit Total</i>', 'class' => 'text-center', 'colspan' => 6],
+			['data' => $jumlah_sks_mk, 'class' => 'text-center'],
+			['data' => $jumlah, 'class' => 'text-center']
+		]);
+
+		$this->table->add_row([
+			['data' => 'Indeks Prestasi / <i>Grade Point</i>', 'class' => 'text-center', 'colspan' => 6],
+			['data' => $ips, 'class' => 'text-center', 'colspan' => 2]
+		]);
+
+		$nilai_tabel =  $this->table->generate();
+
+		$output['mahasiswa'] = $mahasiswa;
+		$output['tabel'] = $nilai_tabel;
+
+		//var_dump($nilai_tabel);
+
+		$html = $this->load->view('cetak/pdf_data_akademik', $output, true);
+		$pdfFilePath  = 'Data Akademik ' . $mahasiswa->nm_pd .  '.pdf';
+		$mpdf = new \Mpdf\Mpdf();
+
+		$mpdf->WriteHTML($html);
+		$mpdf->Output($pdfFilePath, "I");
+	}
+}

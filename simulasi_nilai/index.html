@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Perhitungan Nilai Tugas Akhir</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F3F4F6; }
+        .form-input {
+            width: 100%; padding: 6px 10px; border: 1px solid #D1D5DB; border-radius: 6px; outline: none;
+        }
+        .form-input:focus { border-color: #3B82F6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+<div class="max-w-7xl mx-auto">
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">Simulasi Perhitungan Nilai Tugas Akhir</h1>
+    <p class="text-gray-600 mb-8">Perbandingan form dan perhitungan metode Lama (SKS) vs Baru (Rata-rata 3 Penguji).</p>
+
+    <!-- CONTAINER FOR SIDE-BY-SIDE OR STACKED -->
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+        
+        <!-- ================= SIMULASI 1 (LAMA) ================= -->
+        <div class="bg-white p-6 rounded-2xl shadow-md border-t-4 border-slate-700">
+            <h2 class="text-2xl font-black text-slate-800 mb-2">Simulasi 1: Sistem Lama</h2>
+            <p class="text-sm text-gray-500 mb-6">Bobot: 1 SKS Sempro + 1 SKS Semhas + 4 SKS Sidang (Rata-rata P1,P2,P3)</p>
+
+            <div class="grid grid-cols-2 gap-4 mb-6 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Nilai Sempro (1-7)</label>
+                    <input type="number" id="lama_sempro" class="form-input" step="0.01" min="1" max="7" value="7" oninput="calcLama()">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Nilai Semhas (1-7)</label>
+                    <input type="number" id="lama_semhas" class="form-input" step="0.01" min="1" max="7" value="7" oninput="calcLama()">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-6">
+                <!-- P1 Lama -->
+                <div class="border border-slate-200 rounded-xl p-4">
+                    <h3 class="font-bold text-indigo-700 mb-3 border-b pb-2">Penguji 1 (Sidang Saja)</h3>
+                    <div id="form_lama_p1" class="space-y-3"></div>
+                    <div class="mt-3 pt-2 border-t text-right font-bold text-lg text-gray-800">Total P1: <span id="tot_lama_p1">0.00</span></div>
+                </div>
+                <!-- P2 Lama -->
+                <div class="border border-slate-200 rounded-xl p-4">
+                    <h3 class="font-bold text-emerald-700 mb-3 border-b pb-2">Penguji 2</h3>
+                    <div id="form_lama_p2" class="space-y-3"></div>
+                    <div class="mt-3 pt-2 border-t text-right font-bold text-lg text-gray-800">Total P2: <span id="tot_lama_p2">0.00</span></div>
+                </div>
+                <!-- P3 Lama -->
+                <div class="border border-slate-200 rounded-xl p-4">
+                    <h3 class="font-bold text-amber-700 mb-3 border-b pb-2">Penguji 3</h3>
+                    <div id="form_lama_p3" class="space-y-3"></div>
+                    <div class="mt-3 pt-2 border-t text-right font-bold text-lg text-gray-800">Total P3: <span id="tot_lama_p3">0.00</span></div>
+                </div>
+            </div>
+
+            <div class="mt-8 bg-slate-800 text-white p-5 rounded-xl shadow-inner">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-slate-300">Rata-rata Sidang:</span>
+                    <span class="font-bold text-xl" id="res_lama_rata_sidang">0.00</span>
+                </div>
+                <div class="flex justify-between items-end border-t border-slate-600 pt-3">
+                    <span class="text-lg">Nilai Akhir Lama:</span>
+                    <span class="text-4xl font-black" id="res_lama_final">0.00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SIMULASI 2 (BARU) ================= -->
+        <div class="bg-white p-6 rounded-2xl shadow-md border-t-4 border-blue-600 relative overflow-hidden">
+            <h2 class="text-2xl font-black text-blue-800 mb-2">Simulasi 2: Sistem Baru</h2>
+            <p class="text-sm text-gray-500 mb-6">Bobot: Rata-rata murni 3 Penguji (P1 mencakup Sempro & Semhas)</p>
+
+            <div class="grid grid-cols-1 gap-6">
+                <!-- P1 Baru -->
+                <div class="border-2 border-blue-200 rounded-xl p-4 bg-blue-50/30 shadow-sm relative">
+                    <div class="absolute top-0 right-0 p-3 opacity-10 text-4xl">👑</div>
+                    <h3 class="font-bold text-blue-700 mb-3 border-b border-blue-200 pb-2">Penguji 1 (Termasuk Sempro & Semhas)</h3>
+                    <div id="form_baru_p1" class="space-y-3"></div>
+                    <div class="mt-3 pt-2 border-t border-blue-200 text-right font-bold text-lg text-blue-900">Total P1: <span id="tot_baru_p1">0.00</span></div>
+                </div>
+                <!-- P2 Baru -->
+                <div class="border border-slate-200 rounded-xl p-4">
+                    <h3 class="font-bold text-emerald-700 mb-3 border-b pb-2">Penguji 2</h3>
+                    <div id="form_baru_p2" class="space-y-3"></div>
+                    <div class="mt-3 pt-2 border-t text-right font-bold text-lg text-gray-800">Total P2: <span id="tot_baru_p2">0.00</span></div>
+                </div>
+                <!-- P3 Baru -->
+                <div class="border border-slate-200 rounded-xl p-4">
+                    <h3 class="font-bold text-amber-700 mb-3 border-b pb-2">Penguji 3</h3>
+                    <div id="form_baru_p3" class="space-y-3"></div>
+                    <div class="mt-3 pt-2 border-t text-right font-bold text-lg text-gray-800">Total P3: <span id="tot_baru_p3">0.00</span></div>
+                </div>
+            </div>
+
+            <div class="mt-8 bg-blue-600 text-white p-5 rounded-xl shadow-inner relative">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-blue-200">Rata-rata 3 Penguji:</span>
+                </div>
+                <div class="flex justify-between items-end border-t border-blue-400 pt-3">
+                    <span class="text-lg">Nilai Akhir Baru:</span>
+                    <div class="text-right">
+                        <span class="text-4xl font-black" id="res_baru_final">0.00</span>
+                        <div id="diff_badge" class="mt-1 text-sm font-bold px-2 py-1 rounded bg-white/20 inline-block block">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+// --- KOMPONEN LAMA (Sidang Murni) ---
+const compSidangStandard = [
+    { id: 'manuskrip', name: 'Kualitas Laporan Hasil (Manuskrip)', weight: 0.25 },
+    { id: 'sistematika', name: 'Sistematika Penulisan', weight: 0.15 },
+    { id: 'penguasaan', name: 'Penguasaan Materi dan Argumentasi', weight: 0.25 },
+    { id: 'potensi', name: 'Kemampuan/Potensi Luaran', weight: 0.25 },
+    { id: 'sikap', name: 'Sikap dan Penampilan', weight: 0.10 }
+];
+
+// --- KOMPONEN BARU P1 (Ada Sempro & Semhas) ---
+const compBaruP1 = [
+    { id: 'sempro', name: 'Seminar Proposal', weight: 0.10 },
+    { id: 'semhas', name: 'Seminar Hasil', weight: 0.10 },
+    { id: 'manuskrip', name: 'Kualitas Laporan Hasil (Manuskrip)', weight: 0.15 },
+    { id: 'sistematika', name: 'Sistematika Penulisan', weight: 0.15 },
+    { id: 'penguasaan', name: 'Penguasaan Materi dan Argumentasi', weight: 0.20 },
+    { id: 'potensi', name: 'Kemampuan/Potensi Luaran', weight: 0.20 },
+    { id: 'sikap', name: 'Sikap dan Penampilan', weight: 0.10 }
+];
+
+function generateFormHtml(components, prefix, callbackName) {
+    let html = '';
+    components.forEach(comp => {
+        let inputId = `${prefix}_${comp.id}`;
+        html += `
+            <div class="flex gap-3 items-center">
+                <div class="flex-1">
+                    <div class="text-xs text-gray-500 font-semibold mb-1">${comp.name} <span class="text-indigo-500">(${comp.weight * 100}%)</span></div>
+                    <input type="number" id="${inputId}" class="form-input text-sm font-bold text-gray-800" step="0.01" min="1" max="7" value="7" oninput="${callbackName}()">
+                </div>
+                <div class="w-16 shrink-0 text-right">
+                    <div class="text-[10px] text-gray-400 font-bold mb-1">HASIL</div>
+                    <div class="text-sm font-bold text-gray-700 bg-gray-100 px-2 py-1.5 rounded border border-gray-200" id="res_${inputId}">0.00</div>
+                </div>
+            </div>
+        `;
+    });
+    return html;
+}
+
+function init() {
+    // Render forms Lama
+    document.getElementById('form_lama_p1').innerHTML = generateFormHtml(compSidangStandard, 'lama_p1', 'calcLama');
+    document.getElementById('form_lama_p2').innerHTML = generateFormHtml(compSidangStandard, 'lama_p2', 'calcLama');
+    document.getElementById('form_lama_p3').innerHTML = generateFormHtml(compSidangStandard, 'lama_p3', 'calcLama');
+
+    // Render forms Baru
+    document.getElementById('form_baru_p1').innerHTML = generateFormHtml(compBaruP1, 'baru_p1', 'calcBaru');
+    document.getElementById('form_baru_p2').innerHTML = generateFormHtml(compSidangStandard, 'baru_p2', 'calcBaru');
+    document.getElementById('form_baru_p3').innerHTML = generateFormHtml(compSidangStandard, 'baru_p3', 'calcBaru');
+
+    calcLama();
+    calcBaru();
+}
+
+function calcTotal(components, prefix) {
+    let sum = 0;
+    components.forEach(comp => {
+        let val = parseFloat(document.getElementById(`${prefix}_${comp.id}`).value) || 0;
+        let res = val * comp.weight;
+        sum += res;
+        document.getElementById(`res_${prefix}_${comp.id}`).innerText = res.toFixed(2);
+    });
+    return sum;
+}
+
+let finalScoreLama = 0;
+let finalScoreBaru = 0;
+
+function calcLama() {
+    let vSempro = parseFloat(document.getElementById('lama_sempro').value) || 0;
+    let vSemhas = parseFloat(document.getElementById('lama_semhas').value) || 0;
+    
+    let tP1 = calcTotal(compSidangStandard, 'lama_p1');
+    let tP2 = calcTotal(compSidangStandard, 'lama_p2');
+    let tP3 = calcTotal(compSidangStandard, 'lama_p3');
+
+    document.getElementById('tot_lama_p1').innerText = tP1.toFixed(2);
+    document.getElementById('tot_lama_p2').innerText = tP2.toFixed(2);
+    document.getElementById('tot_lama_p3').innerText = tP3.toFixed(2);
+
+    let rataSidang = (tP1 + tP2 + tP3) / 3;
+    finalScoreLama = ((vSempro * 1) + (vSemhas * 1) + (rataSidang * 4)) / 6;
+
+    document.getElementById('res_lama_rata_sidang').innerText = rataSidang.toFixed(2);
+    document.getElementById('res_lama_final').innerText = finalScoreLama.toFixed(2);
+    
+    updateBadge();
+}
+
+function calcBaru() {
+    let tP1 = calcTotal(compBaruP1, 'baru_p1');
+    let tP2 = calcTotal(compSidangStandard, 'baru_p2');
+    let tP3 = calcTotal(compSidangStandard, 'baru_p3');
+
+    document.getElementById('tot_baru_p1').innerText = tP1.toFixed(2);
+    document.getElementById('tot_baru_p2').innerText = tP2.toFixed(2);
+    document.getElementById('tot_baru_p3').innerText = tP3.toFixed(2);
+
+    finalScoreBaru = (tP1 + tP2 + tP3) / 3;
+    document.getElementById('res_baru_final').innerText = finalScoreBaru.toFixed(2);
+
+    updateBadge();
+}
+
+function updateBadge() {
+    let diff = finalScoreBaru - finalScoreLama;
+    let badge = document.getElementById('diff_badge');
+    if (diff > 0.009) {
+        badge.innerText = `▲ Naik +${diff.toFixed(2)}`;
+        badge.className = 'mt-1 text-sm font-bold px-2 py-1 rounded bg-green-500 text-white shadow-sm inline-block';
+    } else if (diff < -0.009) {
+        badge.innerText = `▼ Turun ${diff.toFixed(2)}`;
+        badge.className = 'mt-1 text-sm font-bold px-2 py-1 rounded bg-red-500 text-white shadow-sm inline-block';
+    } else {
+        badge.innerText = `➖ Tetap`;
+        badge.className = 'mt-1 text-sm font-bold px-2 py-1 rounded bg-slate-500 text-white shadow-sm inline-block';
+    }
+}
+
+// init
+init();
+
+</script>
+</body>
+</html>

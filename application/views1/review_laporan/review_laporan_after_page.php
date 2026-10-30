@@ -1,0 +1,1 @@
+<!-- Redundant list scripts removed. Handled via details page instead. -->
